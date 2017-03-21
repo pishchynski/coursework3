@@ -192,7 +192,6 @@ for j_experimental in (0.0001, 0.01, 1):
 
         vect_e = np.array([[1.] for i in range(0, matrA2.shape[1])])
         kappa_2 = -la.inv(np.dot(np.dot(alpha2, la.inv(matrA2)), vect_e))[0, 0]
-        kappa_2_inv_list.append(1 / copy.deepcopy(kappa_2))
         print('\\kappa_2 =', kappa_2)
         #
 
@@ -658,11 +657,12 @@ for j_experimental in (0.0001, 0.01, 1):
         #
         khi1_khi2_list.append(switches12_num - switches21_num)
 
+    kappa_2_inv_list.append(1 / copy.deepcopy(kappa_2))
     kappa_inv_list_list.append(copy.deepcopy(kappa_inv_list))
     P_neg_list_list.append(copy.deepcopy(P_neg_list))
     khi1_khi2_list_list.append(copy.deepcopy(khi1_khi2_list))
 
-with open("experiment1_2.txt", mode='w') as file:
+with open("experiment4.txt", mode='w') as file:
     file.write('lambda = ' + str(lamD) + '\n')
     file.write('h = ' + str(h) + '\n')
     file.write('mu_1 = ' + str(mu_1) + '\n')
