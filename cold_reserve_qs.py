@@ -378,7 +378,7 @@ class ColdReserveQueueingSystem:
     def calc_system_load(self, matrQ_0, vect_y):
         vect_e = e_col(matrQ_0.shape[1])
         denom = np.dot(np.dot(vect_y, matrQ_0), vect_e)[0]
-        rho = lamD / denom
+        rho = self.queries_stream.intensity / denom
 
     def calc_characteristics(self):
         matrQw_k = self._calc_Qw_k()
