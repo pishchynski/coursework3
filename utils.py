@@ -52,7 +52,7 @@ def system_solve(matr):
 
     result = np.transpose(la.solve(matr_a, matr_b))
 
-    return result
+    return result[0]
 
 
 def r_multiply_e(matr):
@@ -62,7 +62,10 @@ def r_multiply_e(matr):
     :param matr: np.array
     :return: any type with the result of multiplication
     """
-    vect_e = np.array([[1.] for _ in range(matr.shape[1])])
+    if len(matr.shape) > 1:
+        vect_e = np.array([[1.] for _ in range(matr.shape[1])])
+    else:
+        vect_e = np.array([[1.] for _ in range(matr.shape[0])])
     result = np.dot(matr, vect_e)
 
     return result
@@ -75,4 +78,4 @@ def e_col(dim):
     :param dim: int dimension
     :return: np.array with unitary vector-column
     """
-    return np.array([[1] for _ in range(dim)])
+    return np.array([[1.] for _ in range(dim)])
