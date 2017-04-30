@@ -1,5 +1,6 @@
 from cold_reserve_qs import *
 
+
 def run_test():
     queueing_system = ColdReserveQueueingSystem(p_num=150)
     queueing_system.set_BMAP_queries_stream(matrD_0=np.array([[-86., 0.01], [0.02, -2.76]]),

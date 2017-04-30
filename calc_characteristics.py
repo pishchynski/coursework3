@@ -46,15 +46,15 @@ P_neg_list_list = []
 kappa_2_inv_list = []
 khi1_khi2_list_list = []
 
-for j_experimental in (0.0001, 0.01, 1):
+for j_experimental in (1,):
     kappa_inv_list = list()
     P_neg_list = list()
     khi1_khi2_list = list()
-    for i_experimental in (0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1, 1.2, 1.5, 2):
+    for i_experimental in (1,):
 
         # Входной BMAP
-        matrD_0 = np.array([[-86., 0.01], [0.02, -2.76]]) * 0.025
-        matrD = np.array([[85, 0.99], [0.2, 2.54]]) * 0.025
+        matrD_0 = np.array([[-86., 0.01], [0.02, -2.76]])
+        matrD = np.array([[85., 0.99], [0.2, 2.54]])
         matrD_k = [matrD_0]
 
         W_ = matrD_0.shape[0]
@@ -108,15 +108,15 @@ for j_experimental in (0.0001, 0.01, 1):
 
         vect_e = [[1.] for _ in range(matrD_1_.shape[1])]
 
-        c_cor = np.sum(
-            lamDb * np.dot(theta, la.inv(-matrD_0)), matrD_1_ - np.dot(matrD_0, la.inv(-matrD_0))) - 1 / c2var
+        # c_cor = np.sum(
+        #     lamDb * np.dot(theta, la.inv(-matrD_0)), matrD_1_ - np.dot(matrD_0, la.inv(-matrD_0))) - 1 / c2var
         # print(c_cor)
         #
 
 
         # Поток поломок MAP
-        matrH0 = np.array([[-8.110725, 0], [0, -0.26325]]) / 3
-        matrH1 = np.array([[8.0568, 0.053925], [0.146625, 0.116625]]) / 3
+        matrH0 = np.array([[-8., 1.], [2., -12.]])
+        matrH1 = np.array([[2., 5.], [4., 6.]])
         V_ = matrH1.shape[0]
         V = V_ - 1
         matrH = matrH0 + matrH1
@@ -140,8 +140,8 @@ for j_experimental in (0.0001, 0.01, 1):
         # print('h =', h)
 
         # Поток обслуживания PH1
-        beta1 = np.array([[1, 0]])
-        matrS1 = np.array([[-20, 20], [0, -20]])
+        beta1 = np.array([[0.2, 0.8]])
+        matrS1 = np.array([[-170., 15.], [40., -210.]])
         M1 = matrS1.shape[0]
         M1_ = M1 + 1
         M1_e = np.array([[1] for _ in range(matrS1.shape[1])])
@@ -154,8 +154,8 @@ for j_experimental in (0.0001, 0.01, 1):
 
 
         # Поток обслуживания PH2
-        beta2 = np.array([[1, 0]])
-        matrS2 = np.array([[-2, 2], [0, -2]])
+        beta2 = np.array([[0.9, 0.1]])
+        matrS2 = np.array([[-110., 80.], [10., -150.]])
         M2 = matrS2.shape[0]
         M2_ = M2 + 1
         M2_e = np.array([[1] for _ in range(matrS2.shape[1])])
@@ -171,8 +171,8 @@ for j_experimental in (0.0001, 0.01, 1):
                        np.dot(M2_e, beta2)) + kron(np.dot(M1_e, beta1), np.dot(matrS2_0, beta2))
 
         # Поток переключения с прибора-1 на прибор-2
-        alpha1 = np.array([[0.05, 0.95]])
-        matrA1 = np.array([[-1.86075, 0.], [0., -146.9994]]) * i_experimental
+        alpha1 = np.array([[0.9, 0.1]])
+        matrA1 = np.array([[-220., 160.], [20., -300.]])
         L1 = matrA1.shape[0]
         L1_ = L1 + 1
         L1_e = np.array([[1] for _ in range(matrA1.shape[1])])
@@ -198,8 +198,8 @@ for j_experimental in (0.0001, 0.01, 1):
         #
 
         # Поток ремонта PH
-        tau = np.array([[0.98, 0.02]])
-        matrT = np.array([[-100, 0.], [0., -0.02]])
+        tau = np.array([[0.2, 0.8]])
+        matrT = np.array([[-17., 1.5], [4., -21.]])
         T_e = np.array([[1] for _ in range(matrT.shape[1])])
         matrT0 = - np.dot(matrT, T_e)
 
@@ -670,7 +670,7 @@ with open("experiment1_2_2.txt", mode='w') as file:
     file.write('mu_1 = ' + str(mu_1) + '\n')
     file.write('mu_2 = ' + str(mu_2) + '\n')
     file.write('phi = ' + str(phi) + '\n')
-    for i in range(3):
+    for i in range(1):
         file.write('1 / kappa_2 = ' + str(kappa_2_inv_list[i]) + '\n')
         file.write('1 / kappa_1 = ' + ', '.join(map(str, kappa_inv_list_list[i])) + '\n')
         file.write('P- = ' + ', '.join(map(str, P_neg_list_list[i])) + '\n')

@@ -1,14 +1,25 @@
 from utils import *
+from math import sqrt
 
 
 class MAPStream:
     """
     MAP stream class.
-    Contains two transition matrices, stream intensity, variance coefficient and correlation coefficient.
+    Contains two transition matrices, stream intensity,
+    sum of transition matrices, variation coefficient and correlation coefficient.
     """
 
     def print_characteristics(self):
+        """
+        Prints characteristics of MAP stream:
+        Average intensity
+        Variation coefficient
+        Correlation coefficient
+        :return: None
+        """
         print('Average intensity:', self.avg_intensity)
+        print('Variation coefficient:', self.c_var)
+        print('Correlation coefficient:', self.c_cor)
         print('=======END=======', '\n')
 
     def __init__(self, transition_matr0, transition_matr1):
@@ -21,23 +32,41 @@ class MAPStream:
 
         self.transition_matrices = [np.array(transition_matr0)]
         self.transition_matrices.append(np.array(transition_matr1))
-        gamma = system_solve(self.transition_matrices[0] + self.transition_matrices[1])
+        self.transition_matrices_sum = self.transition_matrices[0] + self.transition_matrices[1]
+        gamma = system_solve(self.transition_matrices_sum)
         self.avg_intensity = r_multiply_e(np.dot(gamma, self.transition_matrices[1]))[0]
         self.dim_ = self.transition_matrices[1].shape[0]
         self.dim = self.dim_ - 1
-        self.transition_matrices_sum = self.transition_matrices[0] + self.transition_matrices[1]
+        c_var2 = 2 * self.avg_intensity * r_multiply_e(np.dot(gamma,
+                                                              la.inv(-self.transition_matrices[0])))[0] - 1
+        self.c_var = sqrt(c_var2)
+        self.c_cor = self.avg_intensity * (r_multiply_e(np.dot(np.dot(np.dot(gamma,
+                                                                             la.inv(-self.transition_matrices[0])),
+                                                                      self.transition_matrices[1]),
+                                                               la.inv(-self.transition_matrices[0])))[0] - 1) / c_var2
 
 
 class BMAPStream:
     """
     BMAP stream class.
     Contains list of transition matrices, stream average intensity, stream batches intensity,
-    variance coefficient and correlation coefficient.
+    variation coefficient and correlation coefficient.
     """
 
     def print_characteristics(self):
+        """
+        Prints characteristics of BMAP stream:
+        Average intensity
+        Average batch intensity
+        Variation coefficient
+        Correlation coefficient
+        :return: None
+        """
+
         print('Average intensity:', self.avg_intensity)
         print('Average batch intensity:', self.batch_intensity)
+        print('Variation coefficient:', self.c_var)
+        print('Correlation coefficient:', self.c_cor)
         print('=======END=======', '\n')
 
     def __init__(self, matrD_0, matrD, q, n):
@@ -52,8 +81,8 @@ class BMAPStream:
 
         self.transition_matrices = [np.array(matrD_0)]
         matrD = np.array(matrD)
-        for k in range(1, n+1):
-            self.transition_matrices.append(matrD * (q ** (k-1)) * (1 - q) / (1 - q ** 3))
+        for k in range(1, n + 1):
+            self.transition_matrices.append(matrD * (q ** (k - 1)) * (1 - q) / (1 - q ** 3))
 
         matrD_1_ = np.zeros(self.transition_matrices[0].shape)
         for matr in self.transition_matrices:
@@ -66,16 +95,39 @@ class BMAPStream:
         self.batch_intensity = r_multiply_e(np.dot(theta, -self.transition_matrices[0]))[0]
         self.dim_ = self.transition_matrices[0].shape[0]
         self.dim = self.dim_ - 1
+        c_var2 = 2 * self.batch_intensity * r_multiply_e(np.dot(theta,
+                                                                la.inv(-self.transition_matrices[0])))[0] - 1
+        self.c_var = sqrt(c_var2)
+        self.c_cor = self.batch_intensity * (r_multiply_e(np.dot(np.dot(np.dot(theta,
+                                                                               la.inv(-self.transition_matrices[0])),
+                                                                        matrD_1_ - self.transition_matrices[0]),
+                                                                 la.inv(-self.transition_matrices[0])))[0] - 1) / c_var2
 
 
 class PHStream:
     """
     PH stream class.
-    Contains representation vector and representation matrix, stream intensity.
+    Contains representation vector, representation matrix, representation matrix_0,
+    stream control Markov chain dimensions, stream intensity,
+    variation coefficient and correlation coefficient.
     """
 
-    def print_characteristics(self):
+    def print_characteristics(self, matrix_name, vector_name):
+        """
+        Prints characteristics of PH stream:
+        Matrix
+        Vector
+        Average intensity
+        Variation coefficient
+        Correlation coefficient
+        :return: None
+        """
+
+        print(matrix_name, ':', np.matrix(self.repres_matr))
+        print(vector_name, ':', self.repres_vect)
+
         print('Average intensity:', self.avg_intensity)
+        print('Variation coefficient:', self.c_var)
         print('=======END=======', '\n')
 
     def __init__(self, repres_vect, repres_matr):
@@ -89,6 +141,13 @@ class PHStream:
         self.repres_vect = np.array(repres_vect)
         self.repres_matr = np.array(repres_matr)
         self.repres_matr_0 = -r_multiply_e(self.repres_matr)
-        self.avg_intensity = -la.inv(r_multiply_e(np.dot(self.repres_vect, la.inv(self.repres_matr))))[0, 0]
+        self.avg_intensity = -la.inv(r_multiply_e(np.dot(self.repres_vect,
+                                                         la.inv(self.repres_matr))))[0, 0]
         self.dim = self.repres_matr.shape[0]
         self.dim_ = self.dim + 1
+        b1 = r_multiply_e(np.dot(self.repres_vect,
+                                 la.inv(-self.repres_matr)))[0]
+        b2 = 2 * r_multiply_e(np.dot(self.repres_vect,
+                                 np.linalg.matrix_power(-self.repres_matr, -2)))[0]
+        c_var2 = (b2 - b1 ** 2) / b1 ** 2
+        self.c_var = sqrt(c_var2)

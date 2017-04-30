@@ -650,19 +650,19 @@ class ColdReserveQueueingSystem:
         self.break_stream.print_characteristics()
 
         print('======= Serve unit 1 stream characteristics =======')
-        self.serv_unit1_stream.print_characteristics()
+        self.serv_unit1_stream.print_characteristics('S_1', 'beta_1')
 
         print('======= Serve unit 2 stream characteristics =======')
-        self.serv_unit2_stream.print_characteristics()
+        self.serv_unit2_stream.print_characteristics('S_2', 'beta_2')
 
         print('======= Switch 1 -> 2 stream characteristics =======')
-        self.switch1_2_stream.print_characteristics()
+        self.switch1_2_stream.print_characteristics('A_1', 'alpha_1')
 
         print('======= Switch 2 -> 1 stream characteristics =======')
-        self.switch2_1_stream.print_characteristics()
+        self.switch2_1_stream.print_characteristics('A_2', 'alpha_2')
 
         print('======= Recover stream characteristics =======')
-        self.recover_stream.print_characteristics()
+        self.recover_stream.print_characteristics('T', 'tau')
 
         matrQw_k = self._calc_Qw_k()
         matrQ_k = self._calc_Q_k()

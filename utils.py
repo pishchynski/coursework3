@@ -64,8 +64,10 @@ def r_multiply_e(matr):
     """
     if len(matr.shape) > 1:
         vect_e = np.array([[1.] for _ in range(matr.shape[1])])
-    else:
+    elif len(matr.shape) > 0:
         vect_e = np.array([[1.] for _ in range(matr.shape[0])])
+    else:
+        vect_e = 1.
     result = np.dot(matr, vect_e)
 
     return result
