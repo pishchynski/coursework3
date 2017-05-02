@@ -15,7 +15,8 @@ class ColdReserveQueueingSystem:
     Default values are for stationary Poisson case.
     """
 
-    def __init__(self, p_num=100):
+    def __init__(self, name='Default system', p_num=100):
+        self.name = name
         self._p_num = p_num
         self._eps_G = 10 ** (-6)
         self._eps_Phi = 10 ** (-6)
@@ -134,7 +135,7 @@ class ColdReserveQueueingSystem:
             sum = 0
             for matr in matrQw_k:
                 sum += np.sum(matr[i])
-            # print('matrQw_k[' + str(i) + '] = ', sum)
+                # print('matrQw_k[' + str(i) + '] = ', sum)
 
         return matrQw_k
 
@@ -458,7 +459,7 @@ class ColdReserveQueueingSystem:
              self.break_stream.dim_ * self.serv_unit1_stream.dim:self.break_stream.dim_ * self.serv_unit1_stream.dim + self.break_stream.dim_ * self.serv_unit2_stream.dim * self.switch2_1_stream.dim]
         x3 = x[
              self.break_stream.dim_ * self.serv_unit1_stream.dim + self.break_stream.dim_ * self.serv_unit2_stream.dim * self.switch2_1_stream.dim:self.break_stream.dim_ * self.serv_unit1_stream.dim + self.break_stream.dim_ * self.serv_unit2_stream.dim * (
-             self.switch2_1_stream.dim + self.recover_stream.dim)]
+                 self.switch2_1_stream.dim + self.recover_stream.dim)]
 
         # print('x1 = ', x1)
         # print('x2 = ', x2)
@@ -510,9 +511,9 @@ class ColdReserveQueueingSystem:
         temp_matr = np.dot(vect_P_1_,
                            la.block_diag(np.eye(self.a * self.serv_unit1_stream.dim),
                                          np.zeros((self.a * (
-                                         self.serv_unit2_stream.dim * self.switch2_1_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim),
+                                             self.serv_unit2_stream.dim * self.switch2_1_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim),
                                                    self.a * (
-                                                   self.serv_unit2_stream.dim * self.switch2_1_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim)))))
+                                                       self.serv_unit2_stream.dim * self.switch2_1_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim)))))
         return r_multiply_e(temp_matr)[0, 0]
 
     def calc_prob_1_broken_2_serves(self, vect_P_1_):
@@ -520,7 +521,7 @@ class ColdReserveQueueingSystem:
                            la.block_diag(np.zeros((self.a * self.serv_unit1_stream.dim,
                                                    self.a * self.serv_unit1_stream.dim)),
                                          np.eye(self.a * self.serv_unit2_stream.dim * (
-                                         self.switch2_1_stream.dim + self.recover_stream.dim)),
+                                             self.switch2_1_stream.dim + self.recover_stream.dim)),
                                          np.zeros((self.a * self.recover_stream.dim * self.switch1_2_stream.dim,
                                                    self.a * self.recover_stream.dim * self.switch1_2_stream.dim))))
         return r_multiply_e(temp_matr)[0, 0]
@@ -528,9 +529,9 @@ class ColdReserveQueueingSystem:
     def calc_prob_1_broken_switch_1_2(self, vect_P_1_):
         temp_matr = np.dot(vect_P_1_,
                            la.block_diag(np.zeros((self.a * (self.serv_unit1_stream.dim + self.serv_unit2_stream.dim * (
-                           self.switch2_1_stream.dim + self.recover_stream.dim)),
+                               self.switch2_1_stream.dim + self.recover_stream.dim)),
                                                    self.a * (self.serv_unit1_stream.dim + self.serv_unit2_stream.dim * (
-                                                   self.switch2_1_stream.dim + self.recover_stream.dim)))),
+                                                       self.switch2_1_stream.dim + self.recover_stream.dim)))),
                                          np.eye(self.a * self.recover_stream.dim * self.switch1_2_stream.dim)))
         return r_multiply_e(temp_matr)[0, 0]
 
@@ -539,25 +540,25 @@ class ColdReserveQueueingSystem:
             np.zeros((self.a * self.serv_unit1_stream.dim, self.a * self.serv_unit1_stream.dim)),
             np.eye(self.a * self.serv_unit2_stream.dim * self.switch2_1_stream.dim),
             np.zeros((self.a * (
-            self.recover_stream.dim * self.switch1_2_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim),
+                self.recover_stream.dim * self.switch1_2_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim),
                       self.a * (
-                      self.recover_stream.dim * self.switch1_2_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim)))))
+                          self.recover_stream.dim * self.switch1_2_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim)))))
         return r_multiply_e(temp_matr)[0, 0]
 
     def calc_prob_1_available(self, vect_p_l, vect_P_1_):
         temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.eye(self.a * self.serv_unit1_stream.dim),
                                                      np.zeros((self.a * (
-                                                     self.serv_unit2_stream.dim * self.switch2_1_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim),
+                                                         self.serv_unit2_stream.dim * self.switch2_1_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim),
                                                                self.a * (
-                                                               self.serv_unit2_stream.dim * self.switch2_1_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim)))))
+                                                                   self.serv_unit2_stream.dim * self.switch2_1_stream.dim + self.serv_unit2_stream.dim * self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim)))))
         temp_matr = r_multiply_e(temp_matr1)
 
         temp_matr2 = np.dot(vect_p_l[0],
                             la.block_diag(np.eye(self.a),
                                           np.zeros((self.a * (
-                                          self.switch2_1_stream.dim + self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim),
+                                              self.switch2_1_stream.dim + self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim),
                                                     self.a * (
-                                                    self.switch2_1_stream.dim + self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim)))))
+                                                        self.switch2_1_stream.dim + self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim)))))
         temp_matr += r_multiply_e(temp_matr2)
         return temp_matr[0, 0]
 
@@ -581,11 +582,11 @@ class ColdReserveQueueingSystem:
 
     def calc_prob_1_2_unavail(self, vect_p_l, vect_P_1_):
         temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.zeros((self.a * (
-        self.serv_unit1_stream.dim + self.serv_unit2_stream.dim * (
-        self.switch2_1_stream.dim + self.recover_stream.dim)),
+            self.serv_unit1_stream.dim + self.serv_unit2_stream.dim * (
+                self.switch2_1_stream.dim + self.recover_stream.dim)),
                                                                self.a * (
-                                                               self.serv_unit1_stream.dim + self.serv_unit2_stream.dim * (
-                                                               self.switch2_1_stream.dim + self.recover_stream.dim)))),
+                                                                   self.serv_unit1_stream.dim + self.serv_unit2_stream.dim * (
+                                                                       self.switch2_1_stream.dim + self.recover_stream.dim)))),
                                                      np.eye(
                                                          self.a * self.recover_stream.dim * self.switch1_2_stream.dim)))
         temp_matr = r_multiply_e(temp_matr1)
@@ -593,7 +594,7 @@ class ColdReserveQueueingSystem:
         temp_matr2 = np.dot(vect_p_l[0],
                             la.block_diag(np.zeros((self.a * (1 + self.switch2_1_stream.dim + self.recover_stream.dim),
                                                     self.a * (
-                                                    1 + self.switch2_1_stream.dim + self.recover_stream.dim))),
+                                                        1 + self.switch2_1_stream.dim + self.recover_stream.dim))),
                                           np.eye(self.a * self.recover_stream.dim * self.switch1_2_stream.dim)))
         temp_matr += r_multiply_e(temp_matr2)
 
@@ -605,18 +606,18 @@ class ColdReserveQueueingSystem:
                                                     self.break_stream.transition_matrices[1]),
                                                np.eye(self.serv_unit1_stream.dim)),
                                           np.zeros((self.a * (self.serv_unit2_stream.dim * (
-                                          self.switch2_1_stream.dim + self.recover_stream.dim) + self.recover_stream.dim * self.switch1_2_stream.dim),
+                                              self.switch2_1_stream.dim + self.recover_stream.dim) + self.recover_stream.dim * self.switch1_2_stream.dim),
                                                     self.a * (self.serv_unit2_stream.dim * (
-                                                    self.switch2_1_stream.dim + self.recover_stream.dim) + self.recover_stream.dim * self.switch1_2_stream.dim)))))
+                                                        self.switch2_1_stream.dim + self.recover_stream.dim) + self.recover_stream.dim * self.switch1_2_stream.dim)))))
         temp_matr = r_multiply_e(temp_matr1)
 
         temp_matr2 = np.dot(vect_p_l[0],
                             la.block_diag(kron(np.eye(self.queries_stream.dim_),
                                                self.break_stream.transition_matrices[1]),
                                           np.zeros((self.a * (
-                                          self.switch2_1_stream.dim + self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim),
+                                              self.switch2_1_stream.dim + self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim),
                                                     self.a * (
-                                                    self.switch2_1_stream.dim + self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim)))))
+                                                        self.switch2_1_stream.dim + self.recover_stream.dim + self.recover_stream.dim * self.switch1_2_stream.dim)))))
         temp_matr += r_multiply_e(temp_matr2)
 
         return temp_matr[0, 0]
@@ -624,9 +625,9 @@ class ColdReserveQueueingSystem:
     def calc_avg_switch_2_1_num(self, vect_p_l, vect_P_1_):
         temp_matr1 = np.dot(vect_P_1_,
                             la.block_diag(np.zeros((self.a * (
-                            self.serv_unit1_stream.dim + self.serv_unit2_stream.dim * self.switch2_1_stream.dim),
+                                self.serv_unit1_stream.dim + self.serv_unit2_stream.dim * self.switch2_1_stream.dim),
                                                     self.a * (
-                                                    self.serv_unit1_stream.dim + self.serv_unit2_stream.dim * self.switch2_1_stream.dim))),
+                                                        self.serv_unit1_stream.dim + self.serv_unit2_stream.dim * self.switch2_1_stream.dim))),
                                           kron(np.eye(self.a * self.serv_unit2_stream.dim),
                                                self.recover_stream.repres_matr),
                                           np.zeros((self.a * self.recover_stream.dim * self.switch1_2_stream.dim,
@@ -644,10 +645,10 @@ class ColdReserveQueueingSystem:
 
     def calc_characteristics(self):
         print('======= Queries stream characteristics =======')
-        self.queries_stream.print_characteristics()
+        self.queries_stream.print_characteristics('D')
 
         print('======= Break stream characteristics =======')
-        self.break_stream.print_characteristics()
+        self.break_stream.print_characteristics('H')
 
         print('======= Serve unit 1 stream characteristics =======')
         self.serv_unit1_stream.print_characteristics('S_1', 'beta_1')
@@ -718,15 +719,34 @@ class ColdReserveQueueingSystem:
 
         avg_switch_2_1_num = self.calc_avg_switch_2_1_num(vect_p_l, vect_P_1_)  # Check formulae!
 
-        characteristics = [system_load, system_capacity,
-                           avg_queries_num, queries_num_dispersion,
-                           prob_1_work_serves, prob_1_broken_2_serves,
-                           prob_1_broken_switch_1_2, prob_1_work_switch_2_1,
-                           prob_1_available, prob_1_unavail_2_avail,
-                           prob_1_2_unavail,
-                           avg_switch_1_2_num, avg_switch_2_1_num]
+        # characteristics = [system_load, system_capacity,
+        #                    avg_queries_num, queries_num_dispersion,
+        #                    prob_1_work_serves, prob_1_broken_2_serves,
+        #                    prob_1_broken_switch_1_2, prob_1_work_switch_2_1,
+        #                    prob_1_available, prob_1_unavail_2_avail,
+        #                    prob_1_2_unavail,
+        #                    avg_switch_1_2_num, avg_switch_2_1_num]
 
-        return characteristics, vect_p_l
+        characteristics_dict = {'Загруженность системы': system_load,
+                                'Пропускная способность системы': system_capacity,
+                                'Среднее число запросов в системе': avg_queries_num,
+                                'Дисперсия числа запрососв в системе': queries_num_dispersion,
+                                'Вероятность того, что прибор 1 исправен и обслуживает запрос': prob_1_work_serves,
+                                'Вероятность того, что прибор 1 в неисправном состоянии, а прибор 2 обслуживает запрос': prob_1_broken_2_serves,
+                                """Вероятность того, что в системе есть запросы, прибор1 в неисправном состоянии
+                                и идет переключение с этого прибора на прибор 2 (при этом оба прибора не обслуживают заявки)""": prob_1_broken_switch_1_2,
+                                """Вероятность того, что в системе есть запросы, прибор 1 в исправном состоянии и идет
+                                переключение с прибора 2 на прибор 1 (при этом прибор 2 продолжает обслуживать запросы)""": prob_1_work_switch_2_1,
+                                """Вероятность того, что прибор 1 доступен (средняя доля времени, в течение которого
+                                прибор 1 доступен)""": prob_1_available,
+                                """Вероятность того, что прибор 1 недоступен, а прибор 2 доступен (средняя доля времени,
+                                 в течение которого прибор 2 доступен)""": prob_1_unavail_2_avail,
+                                """Вероятность того, что оба прибора недоступны, т.е. идет переключение с прибора 1
+                                на прибор 2 (средняя доля времени, в течение которого оба прибора недоступны)""": prob_1_2_unavail,
+                                """Среднее число переключений с прибора 1 на прибор 2 в единицу времени""": avg_switch_1_2_num,
+                                """Среднее число переключений с прибора 2 на прибор 1 в единицу времени""": avg_switch_2_1_num}
+
+        return characteristics_dict, vect_p_l
 
 # if __name__ == '__main__':
 #     system = ColdReserveQueueingSystem()

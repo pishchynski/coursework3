@@ -1,6 +1,6 @@
 from utils import *
 from math import sqrt
-
+import pandas as pd
 
 class MAPStream:
     """
@@ -9,7 +9,7 @@ class MAPStream:
     sum of transition matrices, variation coefficient and correlation coefficient.
     """
 
-    def print_characteristics(self):
+    def print_characteristics(self, matrix_name):
         """
         Prints characteristics of MAP stream:
         Average intensity
@@ -17,6 +17,11 @@ class MAPStream:
         Correlation coefficient
         :return: None
         """
+
+        for i, matr in enumerate(self.transition_matrices):
+            print(matrix_name + '_' + str(i), ':')
+            matr_print(matr)
+
         print('Average intensity:', self.avg_intensity)
         print('Variation coefficient:', self.c_var)
         print('Correlation coefficient:', self.c_cor)
@@ -53,15 +58,20 @@ class BMAPStream:
     variation coefficient and correlation coefficient.
     """
 
-    def print_characteristics(self):
+    def print_characteristics(self, matrix_name):
         """
         Prints characteristics of BMAP stream:
+        Matrices
         Average intensity
         Average batch intensity
         Variation coefficient
         Correlation coefficient
         :return: None
         """
+
+        for i, matr in enumerate(self.transition_matrices):
+            print(matrix_name + '_' + str(i), ':')
+            matr_print(matr)
 
         print('Average intensity:', self.avg_intensity)
         print('Average batch intensity:', self.batch_intensity)
@@ -123,8 +133,10 @@ class PHStream:
         :return: None
         """
 
-        print(matrix_name, ':', np.matrix(self.repres_matr))
-        print(vector_name, ':', self.repres_vect)
+        print(matrix_name, ':')
+        matr_print(self.repres_matr)
+        print(vector_name, ':')
+        print(self.repres_vect[0])
 
         print('Average intensity:', self.avg_intensity)
         print('Variation coefficient:', self.c_var)

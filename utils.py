@@ -81,3 +81,18 @@ def e_col(dim):
     :return: np.array with unitary vector-column
     """
     return np.array([[1.] for _ in range(dim)])
+
+
+def matr_print(matr):
+    """
+    Pretty prints the given matrix.
+
+    :param matr: iterable with matrix to print
+    :return: None
+    """
+
+    s = [[str(e) for e in row] for row in matr]
+    lens = [max(map(len, col)) for col in zip(*s)]
+    fmt = '\t'.join('{{:{}}}'.format(x) for x in lens)
+    table = [fmt.format(*row) for row in s]
+    print('\n'.join(table))
