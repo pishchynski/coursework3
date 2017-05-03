@@ -23,7 +23,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem):
     for switch1_2_coef in np.arange(0.05, 10., 0.05):
         switch1_2_matr_1 = copy.deepcopy(switch1_2_matr) * switch1_2_coef
         queueing_system.set_PH_switch1_2_stream(switch1_2_vect, switch1_2_matr_1)
-        characteristics, vect_p_l = queueing_system.calc_characteristics()
+        characteristics, vect_p_l = queueing_system.calc_characteristics(verbose=False)
 
         for i, vect in enumerate(vect_p_l):
             print("P_{} = ".format(str(i)), np.sum(vect))

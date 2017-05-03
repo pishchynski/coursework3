@@ -24,12 +24,14 @@ def kronsum(A, B):
 
     return L + R
 
+
 def calc_G(matrG_prev):
     temp_sum = np.array(copy.deepcopy(matrQ_k[0]))
     for k in range(2, n + 2):
         temp_sum += np.dot(matrQ_k[k], np.linalg.matrix_power(matrG_prev, k))
     matrG_new = np.dot(matrQ_1_neg_inv, temp_sum)
     return matrG_new
+
 
 # Consts to be in .ini file
 
@@ -165,7 +167,6 @@ for j_experimental in (1,):
         mu_2 = -la.inv(np.dot(np.dot(beta2, la.inv(matrS2)), vect_e))[0, 0]
         # print('\\mu_2 =', mu_2)
         #
-
 
         matrS_w = kron(np.dot(matrS1_0, beta1),
                        np.dot(M2_e, beta2)) + kron(np.dot(M1_e, beta1), np.dot(matrS2_0, beta2))
@@ -498,9 +499,9 @@ for j_experimental in (1,):
         x = la.solve(matr_a, matr_b).reshape(-1)
 
         # print('x = ', x)
-        x1 = x[0:V_*M1]
-        x2 = x[V_*M1:V_*M1 + V_*M2*L2]
-        x3 = x[V_*M1 + V_*M2*L2: V_*M1 + V_*M2*L2 + V_*M2*R]
+        x1 = x[0:V_ * M1]
+        x2 = x[V_ * M1:V_ * M1 + V_ * M2 * L2]
+        x3 = x[V_ * M1 + V_ * M2 * L2: V_ * M1 + V_ * M2 * L2 + V_ * M2 * R]
 
         # print('x1 = ', x1)
         # print('x2 = ', x2)
@@ -553,40 +554,45 @@ for j_experimental in (1,):
         #
 
         # Вероятность того, что прибор 1 исправен и обслуживает запрос
-        temp_matr = np.dot(vect_P_1_, la.block_diag(np.eye(a*M1), np.zeros((a*(M2*L2 + M2*R + R*L1), a*(M2*L2 + M2*R + R*L1)))))
+        temp_matr = np.dot(vect_P_1_, la.block_diag(np.eye(a * M1), np.zeros(
+            (a * (M2 * L2 + M2 * R + R * L1), a * (M2 * L2 + M2 * R + R * L1)))))
         vect_e = np.array([[1.] for i in range(0, temp_matr.shape[1])])
         prob1work = np.dot(temp_matr, vect_e)[0, 0]
         # print('P^{(1,0)} =', prob1work)
         #
 
         # Вероятность того, что прибор-1 в неисправном состоянии и прибор-2 обслуживает запрос
-        temp_matr = np.dot(vect_P_1_, la.block_diag(np.zeros((a*M1, a*M1)), np.eye(a*M2*(L2 + R)), np.zeros((a*R*L1, a*R*L1))))
+        temp_matr = np.dot(vect_P_1_, la.block_diag(np.zeros((a * M1, a * M1)), np.eye(a * M2 * (L2 + R)),
+                                                    np.zeros((a * R * L1, a * R * L1))))
         vect_e = np.array([[1.] for i in range(0, temp_matr.shape[1])])
         prob1notwork = np.dot(temp_matr, vect_e)[0, 0]
         # print('P^{(2,0),(1,2)} =', prob1notwork)
         #
 
         # Вероятность того, что в системе есть запросы, прибор 1 в неисправном состоянии и идет переключение с этого прибора на прибор 2 (при этом оба  прибора не обслуживают заявки)
-        temp_matr = np.dot(vect_P_1_, la.block_diag(np.zeros((a*(M1+M2*(L2+R)), a*(M1+M2*(L2+R)))), np.eye(a*R*L1)))
+        temp_matr = np.dot(vect_P_1_, la.block_diag(np.zeros((a * (M1 + M2 * (L2 + R)), a * (M1 + M2 * (L2 + R)))),
+                                                    np.eye(a * R * L1)))
         vect_e = np.array([[1.] for i in range(0, temp_matr.shape[1])])
         prob1notworkswitch2 = np.dot(temp_matr, vect_e)[0, 0]
         # print('P^{(2,1)} =', prob1notworkswitch2)
         #
 
         # Вероятность того, что в системе есть запросы, прибор 1 в исправном состоянии и идет переключение с  прибора 2 на прибор 1 (при этом прибор 2 продолжает обслуживать запросы)
-        temp_matr = np.dot(vect_P_1_, la.block_diag(np.zeros((a*M1, a*M1)), np.eye(a*M2*L2),
-                                                    np.zeros((a*(R*L1 + M2*R), a*(R*L1 + M2*R)))))
+        temp_matr = np.dot(vect_P_1_, la.block_diag(np.zeros((a * M1, a * M1)), np.eye(a * M2 * L2),
+                                                    np.zeros((a * (R * L1 + M2 * R), a * (R * L1 + M2 * R)))))
         vect_e = np.array([[1.] for i in range(0, temp_matr.shape[1])])
         prob1workswitch21 = np.dot(temp_matr, vect_e)[0, 0]
         # print('P^{(2,2)} =', prob1workswitch21)
         #
 
         # Вероятность того, что прибор 1 доступен (средняя доля времени, в течение которого прибор 1 доступен)
-        temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.eye(a*M1), np.zeros((a*(M2*L2 + M2*R + R*L1), a*(M2*L2 + M2*R + R*L1)))))
+        temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.eye(a * M1), np.zeros(
+            (a * (M2 * L2 + M2 * R + R * L1), a * (M2 * L2 + M2 * R + R * L1)))))
         vect_e = np.array([[1.] for i in range(0, temp_matr1.shape[1])])
         temp_matr = np.dot(temp_matr1, vect_e)
 
-        temp_matr2 = np.dot(vect_p_l[0], la.block_diag(np.eye(a), np.zeros((a*(L2+R+R*L1), a*(L2+R+R*L1)))))
+        temp_matr2 = np.dot(vect_p_l[0],
+                            la.block_diag(np.eye(a), np.zeros((a * (L2 + R + R * L1), a * (L2 + R + R * L1)))))
         vect_e = np.array([[1.] for i in range(0, temp_matr2.shape[1])])
         temp_matr += np.dot(temp_matr2, vect_e)
         prob1avail = temp_matr[0, 0]
@@ -594,23 +600,26 @@ for j_experimental in (1,):
         #
 
         # Вероятность того, что прибор 1 недоступен (средняя доля времени, в течение которого прибор 1 недоступен)
-        temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.zeros((a*M1, a*M1)), np.eye(a*(M2*L2 + M2*R + R*L1))))
+        temp_matr1 = np.dot(vect_P_1_,
+                            la.block_diag(np.zeros((a * M1, a * M1)), np.eye(a * (M2 * L2 + M2 * R + R * L1))))
         vect_e = np.array([[1.] for i in range(0, temp_matr1.shape[1])])
         temp_matr = np.dot(temp_matr1, vect_e)
 
-        temp_matr2 = np.dot(vect_p_l[0], la.block_diag(np.zeros((a, a)), np.eye(a*(L2+R+R*L1))))
+        temp_matr2 = np.dot(vect_p_l[0], la.block_diag(np.zeros((a, a)), np.eye(a * (L2 + R + R * L1))))
         vect_e = np.array([[1.] for i in range(0, temp_matr2.shape[1])])
         temp_matr += np.dot(temp_matr2, vect_e)
         prob1notavail = temp_matr[0, 0]
         # print('P_2 =', prob1notavail)
         #
 
-        #10.1 Вероятность того, что прибор 1 недоступен, а прибор 2 доступен (средняя доля времени, в течение которого прибор 2 доступен)
-        temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.zeros((a*M1, a*M1)), np.eye(a*M2*(L2+R)), np.zeros((a*R*L1, a*R*L1))))
+        # 10.1 Вероятность того, что прибор 1 недоступен, а прибор 2 доступен (средняя доля времени, в течение которого прибор 2 доступен)
+        temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.zeros((a * M1, a * M1)), np.eye(a * M2 * (L2 + R)),
+                                                     np.zeros((a * R * L1, a * R * L1))))
         vect_e = np.array([[1.] for i in range(0, temp_matr1.shape[1])])
         temp_matr = np.dot(temp_matr1, vect_e)
 
-        temp_matr2 = np.dot(vect_p_l[0], la.block_diag(np.zeros((a, a)), np.eye(a*(L2+R)), np.zeros((a*R*L1, a*R*L1))))
+        temp_matr2 = np.dot(vect_p_l[0],
+                            la.block_diag(np.zeros((a, a)), np.eye(a * (L2 + R)), np.zeros((a * R * L1, a * R * L1))))
         vect_e = np.array([[1.] for i in range(0, temp_matr2.shape[1])])
         temp_matr += np.dot(temp_matr2, vect_e)
 
@@ -618,12 +627,14 @@ for j_experimental in (1,):
         # print('P_2 =', prob2_avail)
         #
 
-        #11. Вероятность того, что оба прибора недоступны, т.е. идет переключение с прибора 1 на прибор 2 (средняя доля времени, в течение которого оба прибора недоступны)
-        temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.zeros((a*(M1+M2*(L2+R)), a*(M1+M2*(L2+R)))), np.eye(a*R*L1)))
+        # 11. Вероятность того, что оба прибора недоступны, т.е. идет переключение с прибора 1 на прибор 2 (средняя доля времени, в течение которого оба прибора недоступны)
+        temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.zeros((a * (M1 + M2 * (L2 + R)), a * (M1 + M2 * (L2 + R)))),
+                                                     np.eye(a * R * L1)))
         vect_e = np.array([[1.] for i in range(0, temp_matr1.shape[1])])
         temp_matr = np.dot(temp_matr1, vect_e)
 
-        temp_matr2 = np.dot(vect_p_l[0], la.block_diag(np.zeros((a*(1+L2+R), a*(1+L2+R))), np.eye(a*R*L1)))
+        temp_matr2 = np.dot(vect_p_l[0],
+                            la.block_diag(np.zeros((a * (1 + L2 + R), a * (1 + L2 + R))), np.eye(a * R * L1)))
         vect_e = np.array([[1.] for i in range(0, temp_matr2.shape[1])])
         temp_matr += np.dot(temp_matr2, vect_e)
 
@@ -632,12 +643,14 @@ for j_experimental in (1,):
         P_neg_list.append(copy.deepcopy(prob_both_not_avail))
         #
 
-        #12. Среднее число переключений с прибора 1 на прибор 2 в единицу времени
-        temp_matr1 = np.dot(vect_P_1_, la.block_diag(kron(kron(np.eye(W_), matrH1), np.eye(M1)), np.zeros((a*(M2*(L2+R)+R*L1), a*(M2*(L2+R)+R*L1)))))
+        # 12. Среднее число переключений с прибора 1 на прибор 2 в единицу времени
+        temp_matr1 = np.dot(vect_P_1_, la.block_diag(kron(kron(np.eye(W_), matrH1), np.eye(M1)), np.zeros(
+            (a * (M2 * (L2 + R) + R * L1), a * (M2 * (L2 + R) + R * L1)))))
         vect_e = np.array([[1.] for i in range(0, temp_matr1.shape[1])])
         temp_matr = np.dot(temp_matr1, vect_e)
 
-        temp_matr2 = np.dot(vect_p_l[0], la.block_diag(kron(np.eye(W_), matrH1), np.zeros((a*(L2+R+R*L1), a*(L2+R+R*L1)))))
+        temp_matr2 = np.dot(vect_p_l[0], la.block_diag(kron(np.eye(W_), matrH1),
+                                                       np.zeros((a * (L2 + R + R * L1), a * (L2 + R + R * L1)))))
         vect_e = np.array([[1.] for i in range(0, temp_matr2.shape[1])])
         temp_matr += np.dot(temp_matr2, vect_e)
 
@@ -646,12 +659,13 @@ for j_experimental in (1,):
         #
 
         # 13. Среднее число переключений с прибора 2 на прибор 1 в единицу времени
-        temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.zeros((a*(M1+M2*L2), a*(M1+M2*L2))), kron(np.eye(a*M2), matrT),
-                                                     np.zeros((a*R*L1, a*R*L1))))
+        temp_matr1 = np.dot(vect_P_1_, la.block_diag(np.zeros((a * (M1 + M2 * L2), a * (M1 + M2 * L2))),
+                                                     kron(np.eye(a * M2), matrT),
+                                                     np.zeros((a * R * L1, a * R * L1))))
         vect_e = np.array([[1.] for i in range(0, temp_matr1.shape[1])])
         temp_matr = np.dot(temp_matr1, vect_e)
-        temp_matr2 = np.dot(vect_p_l[0], la.block_diag(np.zeros((a*(1+L2), a*(1+L2))), kron(np.eye(a), matrT),
-                                                       np.zeros((a*R*L1, a*R*L1))))
+        temp_matr2 = np.dot(vect_p_l[0], la.block_diag(np.zeros((a * (1 + L2), a * (1 + L2))), kron(np.eye(a), matrT),
+                                                       np.zeros((a * R * L1, a * R * L1))))
         vect_e = np.array([[1.] for i in range(0, temp_matr2.shape[1])])
         temp_matr += np.dot(temp_matr2, vect_e)
         switches21_num = temp_matr[0, 0]

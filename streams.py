@@ -45,10 +45,10 @@ class MAPStream:
         c_var2 = 2 * self.avg_intensity * r_multiply_e(np.dot(gamma,
                                                               la.inv(-self.transition_matrices[0])))[0] - 1
         self.c_var = sqrt(c_var2)
-        self.c_cor = self.avg_intensity * (r_multiply_e(np.dot(np.dot(np.dot(gamma,
+        self.c_cor = (self.avg_intensity * (r_multiply_e(np.dot(np.dot(np.dot(gamma,
                                                                              la.inv(-self.transition_matrices[0])),
                                                                       self.transition_matrices[1]),
-                                                               la.inv(-self.transition_matrices[0])))[0] - 1) / c_var2
+                                                               la.inv(-self.transition_matrices[0])))[0]) - 1) / c_var2
 
 
 class BMAPStream:
@@ -108,10 +108,10 @@ class BMAPStream:
         c_var2 = 2 * self.batch_intensity * r_multiply_e(np.dot(theta,
                                                                 la.inv(-self.transition_matrices[0])))[0] - 1
         self.c_var = sqrt(c_var2)
-        self.c_cor = self.batch_intensity * (r_multiply_e(np.dot(np.dot(np.dot(theta,
+        self.c_cor = (self.batch_intensity * (r_multiply_e(np.dot(np.dot(np.dot(theta,
                                                                                la.inv(-self.transition_matrices[0])),
                                                                         matrD_1_ - self.transition_matrices[0]),
-                                                                 la.inv(-self.transition_matrices[0])))[0] - 1) / c_var2
+                                                                 la.inv(-self.transition_matrices[0])))[0]) - 1) / c_var2
 
 
 class PHStream:
