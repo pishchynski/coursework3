@@ -10,7 +10,7 @@ def run_test():
     queueing_system.set_PH_switch1_2_stream(np.array([[0.05, 0.95]]), np.array([[-1.86075, 0.], [0., -146.9994]]))
     queueing_system.set_PH_switch2_1_stream(np.array([[0.05, 0.95]]), np.array([[-5.58225, 0.], [0., -440.9982]]))
     queueing_system.set_PH_repair_stream(np.array([[1]]), np.array([[-10000]]))
-    characteristics, vect_p_l= queueing_system.calc_characteristics()
+    characteristics, vect_p_l = queueing_system.calc_characteristics()
 
     for i, vect in enumerate(vect_p_l):
         print("P_{} = ".format(str(i)), np.sum(vect))

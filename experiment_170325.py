@@ -28,3 +28,7 @@ def run_test():
 if __name__ == '__main__':
     q_system = run_test()
     experiment_1(q_system)
+    experiment_2(q_system)
+    experiment_3(q_system)
+    experiment_4(q_system)
+    experiment_5(q_system)

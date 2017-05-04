@@ -809,7 +809,7 @@ class ColdReserveQueueingSystem:
                                             ("""Среднее число переключений с прибора 1 на прибор 2 в единицу времени""",
                                              avg_switch_1_2_num),
                                             ("""Среднее число переключений с прибора 2 на прибор 1 в единицу времени""",
-                                             avg_switch_2_1_num)])
+                                             abs(avg_switch_2_1_num))])  # todo Carefully check formulae!
 
         return characteristics_dict, vect_p_l
 

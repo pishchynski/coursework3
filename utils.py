@@ -1,3 +1,6 @@
+from sys import stderr
+from time import sleep
+
 import numpy as np
 import scipy.linalg as la
 import copy
@@ -96,3 +99,22 @@ def matr_print(matr):
     fmt = '\t'.join('{{:{}}}'.format(x) for x in lens)
     table = [fmt.format(*row) for row in s]
     print('\n'.join(table))
+
+
+def linux_check_cpu_temperature():
+    try:
+        sleep_flag = False
+        while True:
+            with open('/sys/class/thermal/thermal_zone0/temp', mode='r') as temp_file:
+                cpu_temp = float(temp_file.readline()) / 1000
+            if cpu_temp >= 90.:
+                print('Your CPU is too hot to proceed!', file=stderr)
+                print('Please wait for 60 seconds to cool CPU...', file=stderr)
+                sleep_flag = True
+                sleep(60)
+            else:
+                if sleep_flag:
+                    print('CPU temp is Ok. Proceeding...', file=stderr)
+                return
+    except:
+        return

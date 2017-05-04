@@ -90,9 +90,9 @@ class BMAPStream:
         """
 
         self.transition_matrices = [np.array(matrD_0)]
-        matrD = np.array(matrD)
+        self.matrD = np.array(matrD)
         for k in range(1, n + 1):
-            self.transition_matrices.append(matrD * (q ** (k - 1)) * (1 - q) / (1 - q ** 3))
+            self.transition_matrices.append(self.matrD * (q ** (k - 1)) * (1 - q) / (1 - q ** 3))
 
         matrD_1_ = np.zeros(self.transition_matrices[0].shape)
         for matr in self.transition_matrices:
@@ -110,6 +110,33 @@ class BMAPStream:
         self.c_var = sqrt(c_var2)
         self.c_cor = (self.batch_intensity * (r_multiply_e(np.dot(np.dot(np.dot(theta,
                                                                                 la.inv(-self.transition_matrices[0])),
+                                                                         matrD_1_ - self.transition_matrices[0]),
+                                                                  la.inv(-self.transition_matrices[0])))[0]) - 1) / c_var2
+
+    def set_transition_matrices(self, transition_matrices):
+        """
+        Sets BMAP transition_matrices
+
+        :param transition_matrices: iterable of np.arrays
+        """
+        self.transition_matrices = np.array(transition_matrices)
+        matrD_1_ = np.zeros(self.transition_matrices[0].shape)
+        for matr in self.transition_matrices:
+            matrD_1_ += matr
+        theta = system_solve(matrD_1_)
+        matrdD_1_ = np.array(copy.deepcopy(self.transition_matrices[1]))
+        for i in range(2, len(self.transition_matrices)):
+            matrdD_1_ += self.transition_matrices[i] * i
+        self.avg_intensity = r_multiply_e(np.dot(theta, matrdD_1_))[0]
+        self.batch_intensity = r_multiply_e(np.dot(theta, -self.transition_matrices[0]))[0]
+        self.dim_ = self.transition_matrices[0].shape[0]
+        self.dim = self.dim_ - 1
+        c_var2 = 2 * self.batch_intensity * r_multiply_e(np.dot(theta,
+                                                                la.inv(-self.transition_matrices[0])))[0] - 1
+        self.c_var = sqrt(c_var2)
+        self.c_cor = (self.batch_intensity * (r_multiply_e(np.dot(np.dot(np.dot(theta,
+                                                                                la.inv(
+                                                                                    -self.transition_matrices[0])),
                                                                          matrD_1_ - self.transition_matrices[0]),
                                                                   la.inv(-self.transition_matrices[0])))[0]) - 1) / c_var2
 
