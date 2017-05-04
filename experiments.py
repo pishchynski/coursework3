@@ -8,7 +8,7 @@ def build_graph():
 def experiment_1(queueing_system: ColdReserveQueueingSystem):
     """
     Зависимость вероятности P- того, что оба прибора недоступны, от среднего времени 1/kappa_1
-    переключения с прибора 1 на прибор 2 при разных средних временах 1/kappa_2 переключения с прибора 2 на прибор 1.
+    переключения с прибора-1 на прибор-2 при разных средних временах 1/kappa_2 переключения с прибора-2 на прибор-1.
 
     :param queueing_system: ColdReserveQueueingSystem
     :return: None
@@ -30,3 +30,15 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem):
 
         for i, charact in enumerate(characteristics.keys()):
             print("{}. ".format(str(i)), charact, ':', characteristics[charact])
+
+
+def experiment_2(queueing_system: ColdReserveQueueingSystem):
+    """
+     Зависимость числа переключений режимов 1_2 + 2_1 от среднего времени 1/kappa_1 переключения с прибора-1 на прибор-2
+     при различных средних временах 1/kappa_2 переключений с прибора-2 на прибор-1
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
+    

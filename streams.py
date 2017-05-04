@@ -46,9 +46,9 @@ class MAPStream:
                                                               la.inv(-self.transition_matrices[0])))[0] - 1
         self.c_var = sqrt(c_var2)
         self.c_cor = (self.avg_intensity * (r_multiply_e(np.dot(np.dot(np.dot(gamma,
-                                                                             la.inv(-self.transition_matrices[0])),
-                                                                      self.transition_matrices[1]),
-                                                               la.inv(-self.transition_matrices[0])))[0]) - 1) / c_var2
+                                                                              la.inv(-self.transition_matrices[0])),
+                                                                       self.transition_matrices[1]),
+                                                                la.inv(-self.transition_matrices[0])))[0]) - 1) / c_var2
 
 
 class BMAPStream:
@@ -109,9 +109,9 @@ class BMAPStream:
                                                                 la.inv(-self.transition_matrices[0])))[0] - 1
         self.c_var = sqrt(c_var2)
         self.c_cor = (self.batch_intensity * (r_multiply_e(np.dot(np.dot(np.dot(theta,
-                                                                               la.inv(-self.transition_matrices[0])),
-                                                                        matrD_1_ - self.transition_matrices[0]),
-                                                                 la.inv(-self.transition_matrices[0])))[0]) - 1) / c_var2
+                                                                                la.inv(-self.transition_matrices[0])),
+                                                                         matrD_1_ - self.transition_matrices[0]),
+                                                                  la.inv(-self.transition_matrices[0])))[0]) - 1) / c_var2
 
 
 class PHStream:
@@ -160,6 +160,6 @@ class PHStream:
         b1 = r_multiply_e(np.dot(self.repres_vect,
                                  la.inv(-self.repres_matr)))[0]
         b2 = 2 * r_multiply_e(np.dot(self.repres_vect,
-                                 np.linalg.matrix_power(-self.repres_matr, -2)))[0]
+                                     np.linalg.matrix_power(-self.repres_matr, -2)))[0]
         c_var2 = (b2 - b1 ** 2) / b1 ** 2
         self.c_var = sqrt(c_var2)

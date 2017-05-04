@@ -13,7 +13,7 @@ def run_test():
     queueing_system.set_PH_serv_unit2_stream(np.array([[0.9, 0.1]]), np.array([[-110., 80.], [10., -150.]]))
     queueing_system.set_PH_switch1_2_stream(np.array([[0.9, 0.1]]), np.array([[-220., 160.], [20., -300.]]))
     queueing_system.set_PH_switch2_1_stream(np.array([[0.9999, 0.0001]]), np.array([[-100000., 0.], [0., -230.]]))
-    queueing_system.set_PH_recover_stream(np.array([[0.2, 0.8]]), np.array([[-17., 1.5], [4., -21.]]))
+    queueing_system.set_PH_repair_stream(np.array([[0.2, 0.8]]), np.array([[-17., 1.5], [4., -21.]]))
     characteristics, vect_p_l = queueing_system.calc_characteristics()
 
     for i, vect in enumerate(vect_p_l):
