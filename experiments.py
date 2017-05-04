@@ -1,5 +1,5 @@
 from cold_reserve_qs import *
-
+from tqdm import tqdm
 
 def build_graph():
     None
@@ -20,16 +20,16 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem):
     switch1_2_matr = copy.deepcopy(queueing_system.switch1_2_stream.repres_matr)
     switch1_2_vect = copy.deepcopy(queueing_system.switch1_2_stream.repres_vect)
 
-    for switch1_2_coef in np.arange(0.05, 10., 0.05):
+    experiment_1_list = []
+
+    for switch1_2_coef in tqdm(np.arange(0.05, 10., 0.05)):
         switch1_2_matr_1 = copy.deepcopy(switch1_2_matr) * switch1_2_coef
         queueing_system.set_PH_switch1_2_stream(switch1_2_vect, switch1_2_matr_1)
         characteristics, vect_p_l = queueing_system.calc_characteristics(verbose=False)
 
-        for i, vect in enumerate(vect_p_l):
-            print("P_{} = ".format(str(i)), np.sum(vect))
+        experiment_1_list.append([1 / queueing_system.switch1_2_stream.avg_intensity, list(characteristics.items())[10]])
 
-        for i, charact in enumerate(characteristics.keys()):
-            print("{}. ".format(str(i)), charact, ':', characteristics[charact])
+    print(experiment_1_list)
 
 
 def experiment_2(queueing_system: ColdReserveQueueingSystem):
@@ -41,4 +41,8 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem):
     :return: None
     """
 
-    
+    switch2_1_matr = copy.deepcopy(queueing_system.switch2_1_stream.repres_matr)
+    switch2_1_vect = copy.deepcopy(queueing_system.switch2_1_stream.repres_vect)
+
+    switch1_2_matr = copy.deepcopy(queueing_system.switch1_2_stream.repres_matr)
+    switch1_2_vect = copy.deepcopy(queueing_system.switch1_2_stream.repres_vect)

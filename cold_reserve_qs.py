@@ -734,9 +734,9 @@ class ColdReserveQueueingSystem:
             print(ergodicity, '>= 0', file=sys.stderr)
             print('Выполнение программы остановлено!', file=sys.stderr)
             exit()  # Replace with return or smth else to detect iteration
-        else:
-            print('Условие эргодичности выполняется!')
-            print(ergodicity, '< 0')
+        # else:
+        #     print('Условие эргодичности выполняется!')
+        #     print(ergodicity, '< 0')
 
         matrG = self._calc_G(matrQ_k)
         matrG_0 = self._calc_G_0(matrG, matrQ_k, matrQv_0)
@@ -788,7 +788,7 @@ class ColdReserveQueueingSystem:
         characteristics_dict = OrderedDict([('Загруженность системы', system_load),
                                             ('Пропускная способность системы', system_capacity),
                                             ('Среднее число запросов в системе', avg_queries_num),
-                                            ('Дисперсия числа запрососв в системе', queries_num_dispersion),
+                                            ('Дисперсия числа запросов в системе', queries_num_dispersion),
                                             ('Вероятность того, что прибор 1 исправен и обслуживает запрос',
                                              prob_1_work_serves),
                                             ("""Вероятность того, что прибор 1 в неисправном состоянии, а прибор 2
