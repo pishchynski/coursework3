@@ -91,6 +91,13 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem):
 
 
 def experiment_3(queueing_system: ColdReserveQueueingSystem):
+    """
+    Зависимость L от lambda при различных значениях h.
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
     linux_check_cpu_temperature()
 
     print('Experiment 3 launched!')
@@ -121,6 +128,12 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem):
 
 
 def experiment_4(queueing_system: ColdReserveQueueingSystem):
+    """
+    Зависимость L от lambda при различных коэффициентах корреляции c_cor во входном потоке.
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
     linux_check_cpu_temperature()
 
     print('Experiment 4 launched!')
@@ -128,17 +141,19 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem):
     local_queueing_system = copy.deepcopy(queueing_system)
 
     queries_matrices = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices)
-    matrD = copy.deepcopy(local_queueing_system.queries_stream.matr_D)
+    matrD = copy.deepcopy(local_queueing_system.queries_stream.matrD)
 
     experiment_4_result_list = []
 
-    for q_value in (0.1, 0.5, 0.8):
-        local_queueing_system.set_BMAP_queries_stream(queries_matrices[0], matrD)
+    for cor_coef in (0.01, 1, 100):
+        matrD_10 = copy.deepcopy(matrD)
+        matrD_10[0] *= cor_coef
+        local_queueing_system.set_BMAP_queries_stream(queries_matrices[0], matrD_10, q=local_queueing_system.queries_stream.q, n=local_queueing_system.n)
         experiment_4_sublist = [local_queueing_system.queries_stream.c_cor]
         for queries_coef in tqdm([i / 1000 if i < 10 else i / 100 if i < 50 else i / 10 for i in range(1, 10)]):
             matrD_0_1 = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices[0]) * queries_coef
             matrD_1 = copy.deepcopy(local_queueing_system.queries_stream.matrD) * queries_coef
-            local_queueing_system.set_BMAP_queries_stream(matrD_0_1, matrD_1, q=q_value, n=local_queueing_system.n)
+            local_queueing_system.set_BMAP_queries_stream(matrD_0_1, matrD_1, q=local_queueing_system.queries_stream.q, n=local_queueing_system.n)
             characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
             experiment_4_sublist.append([local_queueing_system.queries_stream.avg_intensity,
@@ -151,6 +166,13 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem):
 
 
 def experiment_5(queueing_system: ColdReserveQueueingSystem):
+    """
+    Зависимость V от lambda при различных коэффициентах корреляции c_cor во входном потоке.
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
     linux_check_cpu_temperature()
 
     print('Experiment 5 launched!')
@@ -158,17 +180,19 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem):
     local_queueing_system = copy.deepcopy(queueing_system)
 
     queries_matrices = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices)
-    matrD = copy.deepcopy(local_queueing_system.queries_stream.matr_D)
+    matrD = copy.deepcopy(local_queueing_system.queries_stream.matrD)
 
     experiment_5_result_list = []
 
-    for q_value in (0.1, 0.5, 0.8):
-        local_queueing_system.set_BMAP_queries_stream(queries_matrices[0], matrD)
+    for cor_coef in (0.01, 1, 100):
+        matrD_10 = copy.deepcopy(matrD)
+        matrD_10[0] *= cor_coef
+        local_queueing_system.set_BMAP_queries_stream(queries_matrices[0], matrD_10, q=local_queueing_system.queries_stream.q, n=local_queueing_system.n)
         experiment_5_sublist = [local_queueing_system.queries_stream.c_cor]
         for queries_coef in tqdm([i / 1000 if i < 10 else i / 100 if i < 50 else i / 10 for i in range(1, 10)]):
             matrD_0_1 = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices[0]) * queries_coef
             matrD_1 = copy.deepcopy(local_queueing_system.queries_stream.matrD) * queries_coef
-            local_queueing_system.set_BMAP_queries_stream(matrD_0_1, matrD_1, q=q_value, n=local_queueing_system.n)
+            local_queueing_system.set_BMAP_queries_stream(matrD_0_1, matrD_1, q=local_queueing_system.queries_stream.q, n=local_queueing_system.n)
             characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
             experiment_5_sublist.append([local_queueing_system.queries_stream.avg_intensity,
@@ -178,3 +202,92 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem):
         file_name = 'experiment_5_' + local_queueing_system.name + '.qsr'
         with open('experiment_results/' + file_name, mode='w') as res_file:
             res_file.write(str(experiment_5_result_list))
+
+
+def experiment_6(queueing_system: ColdReserveQueueingSystem):
+    """
+    Зависимость вероятности доступности P_1+ доступности прибора-1 от h при различных коэффициентах корреляции c_cor
+    в потоке поломок
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 6 launched!')
+
+    local_queueing_system = copy.deepcopy(queueing_system)
+
+    break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+
+    experiment_6_result_list = []
+
+    for cor_coef in (0.01, 1, 100):
+        break_matr0 = copy.deepcopy(break_matrices[0])
+        break_matr0[0] *= cor_coef
+        break_matr1 = copy.deepcopy(break_matrices[1])
+        break_matr1[0] *= cor_coef
+
+        break_matrices_0 = [break_matr0, break_matr1]
+
+        local_queueing_system.set_MAP_break_stream(break_matrices_0[0], break_matrices_0[1])
+        experiment_6_sublist = [local_queueing_system.break_stream.c_cor]
+        for break_coef in tqdm([i / 1000 if i < 10 else i / 100 if i < 50 else i / 10 for i in range(1, 10)]):
+            break_matrices_1 = copy.deepcopy(break_matrices_0)
+            break_matrices_1[0] *= break_coef
+            break_matrices_1[1] *= break_coef
+            local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+            characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+            experiment_6_sublist.append([local_queueing_system.break_stream.avg_intensity,
+                                         list(characteristics.items())[8][1]])
+        experiment_6_result_list.append(copy.deepcopy(experiment_6_sublist))
+
+        file_name = 'experiment_6_' + local_queueing_system.name + '.qsr'
+        with open('experiment_results/' + file_name, mode='w') as res_file:
+            res_file.write(str(experiment_6_result_list))
+
+
+def experiment_7(queueing_system: ColdReserveQueueingSystem):
+    """
+    Зависимость вероятности доступности P_1+ доступности прибора-1 от h при различных коэффициентах корреляции c_cor
+    в потоке поломок
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 7 launched!')
+
+    local_queueing_system = copy.deepcopy(queueing_system)
+
+    break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+
+    experiment_7_result_list = []
+
+    for cor_coef in (0.01, 1, 100):
+        break_matr0 = copy.deepcopy(break_matrices[0])
+        break_matr0[0] *= cor_coef
+        break_matr1 = copy.deepcopy(break_matrices[1])
+        break_matr1[0] *= cor_coef
+
+        break_matrices_0 = [break_matr0, break_matr1]
+
+        local_queueing_system.set_MAP_break_stream(break_matrices_0[0], break_matrices_0[1])
+        experiment_7_sublist = [local_queueing_system.break_stream.c_cor]
+        for break_coef in tqdm([i / 1000 if i < 10 else i / 100 if i < 50 else i / 10 for i in range(1, 10)]):
+            break_matrices_1 = copy.deepcopy(break_matrices_0)
+            break_matrices_1[0] *= break_coef
+            break_matrices_1[1] *= break_coef
+            local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+            characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+            experiment_7_sublist.append([local_queueing_system.break_stream.avg_intensity,
+                                         1 - list(characteristics.items())[8][1]])
+        experiment_7_result_list.append(copy.deepcopy(experiment_7_sublist))
+
+        file_name = 'experiment_7_' + local_queueing_system.name + '.qsr'
+        with open('experiment_results/' + file_name, mode='w') as res_file:
+            res_file.write(str(experiment_7_result_list))
+

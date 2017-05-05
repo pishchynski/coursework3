@@ -89,6 +89,7 @@ class BMAPStream:
         :param n: int number of matrices to be generated (excluding matrix D_0)
         """
 
+        self.q = q
         self.transition_matrices = [np.array(matrD_0)]
         self.matrD = np.array(matrD)
         for k in range(1, n + 1):
