@@ -1,7 +1,6 @@
-from email._encoded_words import _QByteMap
+from tqdm import tqdm
 
 from cold_reserve_qs import *
-from tqdm import tqdm
 
 
 def build_graph():
@@ -128,9 +127,9 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem):
                                          list(characteristics.items())[2][1]])
         experiment_3_result_list.append(copy.deepcopy(experiment_3_sublist))
 
-        file_name = 'experiment_3_' + local_queueing_system.name + '.qsr'
-        with open('experiment_results/' + file_name, mode='w') as res_file:
-            res_file.write(str(experiment_3_result_list))
+    file_name = 'experiment_3_' + local_queueing_system.name + '.qsr'
+    with open('experiment_results/' + file_name, mode='w') as res_file:
+        res_file.write(str(experiment_3_result_list))
 
 
 def experiment_4(queueing_system: ColdReserveQueueingSystem):
@@ -168,9 +167,9 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem):
                                          list(characteristics.items())[2][1]])
         experiment_4_result_list.append(copy.deepcopy(experiment_4_sublist))
 
-        file_name = 'experiment_4_' + local_queueing_system.name + '.qsr'
-        with open('experiment_results/' + file_name, mode='w') as res_file:
-            res_file.write(str(experiment_4_result_list))
+    file_name = 'experiment_4_' + local_queueing_system.name + '.qsr'
+    with open('experiment_results/' + file_name, mode='w') as res_file:
+        res_file.write(str(experiment_4_result_list))
 
 
 def experiment_5(queueing_system: ColdReserveQueueingSystem):
@@ -209,9 +208,9 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem):
                                          list(characteristics.items())[3][1]])
         experiment_5_result_list.append(copy.deepcopy(experiment_5_sublist))
 
-        file_name = 'experiment_5_' + local_queueing_system.name + '.qsr'
-        with open('experiment_results/' + file_name, mode='w') as res_file:
-            res_file.write(str(experiment_5_result_list))
+    file_name = 'experiment_5_' + local_queueing_system.name + '.qsr'
+    with open('experiment_results/' + file_name, mode='w') as res_file:
+        res_file.write(str(experiment_5_result_list))
 
 
 def experiment_6(queueing_system: ColdReserveQueueingSystem):
@@ -255,9 +254,9 @@ def experiment_6(queueing_system: ColdReserveQueueingSystem):
                                          list(characteristics.items())[8][1]])
         experiment_6_result_list.append(copy.deepcopy(experiment_6_sublist))
 
-        file_name = 'experiment_6_' + local_queueing_system.name + '.qsr'
-        with open('experiment_results/' + file_name, mode='w') as res_file:
-            res_file.write(str(experiment_6_result_list))
+    file_name = 'experiment_6_' + local_queueing_system.name + '.qsr'
+    with open('experiment_results/' + file_name, mode='w') as res_file:
+        res_file.write(str(experiment_6_result_list))
 
 
 def experiment_7(queueing_system: ColdReserveQueueingSystem):
@@ -301,9 +300,9 @@ def experiment_7(queueing_system: ColdReserveQueueingSystem):
                                          1 - list(characteristics.items())[8][1]])
         experiment_7_result_list.append(copy.deepcopy(experiment_7_sublist))
 
-        file_name = 'experiment_7_' + local_queueing_system.name + '.qsr'
-        with open('experiment_results/' + file_name, mode='w') as res_file:
-            res_file.write(str(experiment_7_result_list))
+    file_name = 'experiment_7_' + local_queueing_system.name + '.qsr'
+    with open('experiment_results/' + file_name, mode='w') as res_file:
+        res_file.write(str(experiment_7_result_list))
 
 
 def experiment_8(queueing_system: ColdReserveQueueingSystem):
@@ -341,9 +340,9 @@ def experiment_8(queueing_system: ColdReserveQueueingSystem):
                                          list(characteristics.items())[2][1]])
         experiment_8_result_list.append(copy.deepcopy(experiment_8_sublist))
 
-        file_name = 'experiment_8_' + local_queueing_system.name + '.qsr'
-        with open('experiment_results/' + file_name, mode='w') as res_file:
-            res_file.write(str(experiment_8_result_list))
+    file_name = 'experiment_8_' + local_queueing_system.name + '.qsr'
+    with open('experiment_results/' + file_name, mode='w') as res_file:
+        res_file.write(str(experiment_8_result_list))
 
 def experiment_9(queueing_system: ColdReserveQueueingSystem):
     """
@@ -379,6 +378,6 @@ def experiment_9(queueing_system: ColdReserveQueueingSystem):
                                          list(characteristics.items())[1][1]])
         experiment_9_result_list.append(copy.deepcopy(experiment_9_sublist))
 
-        file_name = 'experiment_9_' + local_queueing_system.name + '.qsr'
-        with open('experiment_results/' + file_name, mode='w') as res_file:
-            res_file.write(str(experiment_9_result_list))
+    file_name = 'experiment_9_' + local_queueing_system.name + '.qsr'
+    with open('experiment_results/' + file_name, mode='w') as res_file:
+        res_file.write(str(experiment_9_result_list))
