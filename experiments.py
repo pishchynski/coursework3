@@ -1,3 +1,4 @@
+import yaml
 from tqdm import tqdm
 
 from cold_reserve_qs import *
@@ -48,6 +49,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem):
     file_name = 'experiment_1_' + local_queueing_system.name + '.qsr'
     with open('experiment_results/' + file_name, mode='w') as res_file:
         res_file.write(str(experiment_1_result_list))
+        yaml.dump(experiment_1_result_list, res_file, default_flow_style=False)
 
 
 def experiment_2(queueing_system: ColdReserveQueueingSystem):
@@ -90,7 +92,7 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem):
 
         file_name = 'experiment_2_' + local_queueing_system.name + '.qsr'
         with open('experiment_results/' + file_name, mode='w') as res_file:
-            res_file.write(str(experiment_2_result_list))
+            yaml.dump(experiment_2_result_list, res_file, default_flow_style=False)
 
 
 def experiment_3(queueing_system: ColdReserveQueueingSystem):
@@ -129,7 +131,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem):
 
     file_name = 'experiment_3_' + local_queueing_system.name + '.qsr'
     with open('experiment_results/' + file_name, mode='w') as res_file:
-        res_file.write(str(experiment_3_result_list))
+        yaml.dump(experiment_3_result_list, res_file, default_flow_style=False)
 
 
 def experiment_4(queueing_system: ColdReserveQueueingSystem):
@@ -169,7 +171,7 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem):
 
     file_name = 'experiment_4_' + local_queueing_system.name + '.qsr'
     with open('experiment_results/' + file_name, mode='w') as res_file:
-        res_file.write(str(experiment_4_result_list))
+        yaml.dump(experiment_4_result_list, res_file, default_flow_style=False)
 
 
 def experiment_5(queueing_system: ColdReserveQueueingSystem):
@@ -210,7 +212,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem):
 
     file_name = 'experiment_5_' + local_queueing_system.name + '.qsr'
     with open('experiment_results/' + file_name, mode='w') as res_file:
-        res_file.write(str(experiment_5_result_list))
+        yaml.dump(experiment_5_result_list, res_file, default_flow_style=False)
 
 
 def experiment_6(queueing_system: ColdReserveQueueingSystem):
@@ -256,7 +258,7 @@ def experiment_6(queueing_system: ColdReserveQueueingSystem):
 
     file_name = 'experiment_6_' + local_queueing_system.name + '.qsr'
     with open('experiment_results/' + file_name, mode='w') as res_file:
-        res_file.write(str(experiment_6_result_list))
+        yaml.dump(experiment_6_result_list, res_file, default_flow_style=False)
 
 
 def experiment_7(queueing_system: ColdReserveQueueingSystem):
@@ -302,7 +304,7 @@ def experiment_7(queueing_system: ColdReserveQueueingSystem):
 
     file_name = 'experiment_7_' + local_queueing_system.name + '.qsr'
     with open('experiment_results/' + file_name, mode='w') as res_file:
-        res_file.write(str(experiment_7_result_list))
+        yaml.dump(experiment_7_result_list, res_file, default_flow_style=False)
 
 
 def experiment_8(queueing_system: ColdReserveQueueingSystem):
@@ -342,7 +344,7 @@ def experiment_8(queueing_system: ColdReserveQueueingSystem):
 
     file_name = 'experiment_8_' + local_queueing_system.name + '.qsr'
     with open('experiment_results/' + file_name, mode='w') as res_file:
-        res_file.write(str(experiment_8_result_list))
+        yaml.dump(experiment_8_result_list, res_file, default_flow_style=False)
 
 def experiment_9(queueing_system: ColdReserveQueueingSystem):
     """
@@ -380,4 +382,4 @@ def experiment_9(queueing_system: ColdReserveQueueingSystem):
 
     file_name = 'experiment_9_' + local_queueing_system.name + '.qsr'
     with open('experiment_results/' + file_name, mode='w') as res_file:
-        res_file.write(str(experiment_9_result_list))
+        yaml.dump(experiment_9_result_list, res_file, default_flow_style=False)
