@@ -30,7 +30,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem):
 
     experiment_1_result_list = []
 
-    for switch2_1_coef in (0.01, 1, 100):
+    for switch2_1_coef in (0.1, 1, 10):
         linux_check_cpu_temperature()
 
         switch2_1_matr_1 = copy.deepcopy(switch2_1_matr) * switch2_1_coef
@@ -73,7 +73,7 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem):
 
     experiment_2_result_list = []
 
-    for switch2_1_coef in (0.01, 1, 100):
+    for switch2_1_coef in (0.1, 1, 10):
         linux_check_cpu_temperature()
 
         switch2_1_matr_1 = copy.deepcopy(switch2_1_matr) * switch2_1_coef  # todo Check if copy necessary
@@ -112,13 +112,13 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem):
 
     experiment_3_result_list = []
 
-    for break_coef in (0.01, 1, 100):
+    for break_coef in (0.1, 1, 10):
         linux_check_cpu_temperature()
 
         break_matrices_1 = [matr * break_coef for matr in break_matrices]  # todo Check if copy necessary
         local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
         experiment_3_sublist = [local_queueing_system.break_stream.avg_intensity]
-        for queries_coef in tqdm([i / 1000 if i < 10 else i / 100 if i < 50 else i / 50 for i in range(1, 101)]):
+        for queries_coef in tqdm([i / 1000 if i < 10 else i / 100 if i < 50 else i / 10 for i in range(1, 101)]):
             queries_matrices_1 = [matr * queries_coef for matr in queries_matrices]
             local_queueing_system.queries_stream.set_transition_matrices(queries_matrices_1)
             characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
@@ -150,14 +150,14 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem):
 
     experiment_4_result_list = []
 
-    for cor_coef in (0.01, 1, 100):
+    for cor_coef in (0.1, 1, 10):
         linux_check_cpu_temperature()
 
         matrD_10 = copy.deepcopy(matrD)
         matrD_10[0] *= cor_coef
         local_queueing_system.set_BMAP_queries_stream(queries_matrices[0], matrD_10, q=local_queueing_system.queries_stream.q, n=local_queueing_system.n)
         experiment_4_sublist = [local_queueing_system.queries_stream.c_cor]
-        for queries_coef in tqdm([i / 1000 if i < 10 else i / 100 if i < 50 else i / 50 for i in range(1, 101)]):
+        for queries_coef in tqdm([i / 1000 if i < 10 else i / 100 if i < 50 else i / 10 for i in range(1, 101)]):
             matrD_0_1 = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices[0]) * queries_coef
             matrD_1 = copy.deepcopy(local_queueing_system.queries_stream.matrD) * queries_coef
             local_queueing_system.set_BMAP_queries_stream(matrD_0_1, matrD_1, q=local_queueing_system.queries_stream.q, n=local_queueing_system.n)
@@ -191,7 +191,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem):
 
     experiment_5_result_list = []
 
-    for cor_coef in (0.01, 1, 100):
+    for cor_coef in (0.1, 1, 10):
         linux_check_cpu_temperature()
 
         matrD_10 = copy.deepcopy(matrD)
@@ -231,7 +231,7 @@ def experiment_6(queueing_system: ColdReserveQueueingSystem):
 
     experiment_6_result_list = []
 
-    for cor_coef in (0.01, 1, 100):
+    for cor_coef in (0.1, 1, 10):
         linux_check_cpu_temperature()
 
         break_matr0 = copy.deepcopy(break_matrices[0])
@@ -277,7 +277,7 @@ def experiment_7(queueing_system: ColdReserveQueueingSystem):
 
     experiment_7_result_list = []
 
-    for cor_coef in (0.01, 1, 100):
+    for cor_coef in (0.1, 1, 10):
         linux_check_cpu_temperature()
 
         break_matr0 = copy.deepcopy(break_matrices[0])
@@ -363,13 +363,13 @@ def experiment_9(queueing_system: ColdReserveQueueingSystem):
 
     experiment_9_result_list = []
 
-    for break_coef in (0.01, 1, 100):
+    for break_coef in (0.1, 1, 10):
         linux_check_cpu_temperature()
 
         break_matrices_1 = [matr * break_coef for matr in break_matrices]  # todo Check if copy necessary
         local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
         experiment_9_sublist = [local_queueing_system.break_stream.avg_intensity]
-        for queries_coef in tqdm([i / 1000 if i < 10 else i / 100 if i < 50 else i / 50 for i in range(1, 101)]):
+        for queries_coef in tqdm([i / 1000 if i < 10 else i / 100 if i < 50 else i / 10 for i in range(1, 101)]):
             queries_matrices_1 = [matr * queries_coef for matr in queries_matrices]
             local_queueing_system.queries_stream.set_transition_matrices(queries_matrices_1)
             characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
