@@ -1,11 +1,44 @@
+from itertools import cycle
+
+import matplotlib.pyplot as plt
 import yaml
 from tqdm import tqdm
 
-from cold_reserve_qs import *
+from src.cold_reserve_qs import *
 
 
-def build_graph():
-    None
+def build_plot(experiment_result_list, experiment_name, x_label, y_label, file_name='experiment_plot', file_type='eps'):
+    """
+    Builds experiment plots and saves them to file.
+
+    :param experiment_result_list: list containing experiment results in two dimensions
+    :param experiment_name: str with experiment name to be plot's title
+    :param x_label: str with x-axis label to be displayed on plot
+    :param y_label: str with y-axis label to be displayed on plot
+    :param file_type: str with file type ('eps', 'png'). Default is 'eps'
+    :return: None
+    """
+
+    fig = plt.figure(1)
+
+    fig.suptitle(experiment_name)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    lines = ["-", "--", "-.", ":"]
+    linecycler = cycle(lines)
+
+    for num, experiments in enumerate(experiment_result_list):
+        exp_param = experiments[0]
+        x_list = [x[0] for x in experiments[1]]
+        y_list = [x[1] for x in experiments[1]]
+        plt.subplot(200 + num)
+        plt.plot(x_list, y_list, next(linecycler), label=str(exp_param))
+
+    fig.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plot_filename = '../experiment_plots/' + file_name + '.' + file_type
+    fig.savefig(plot_filename, file_type)
+
 
 
 def experiment_1(queueing_system: ColdReserveQueueingSystem):
@@ -43,13 +76,19 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem):
             characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
             experiment_1_sublist.append(
-                [1 / local_queueing_system.switch1_2_stream.avg_intensity, list(characteristics.items())[10][1]])
-        experiment_1_result_list.append(copy.deepcopy(experiment_1_sublist))
+                [[1 / local_queueing_system.switch1_2_stream.avg_intensity, list(characteristics.items())[10][1]]])
+        experiment_1_result_list.append([copy.deepcopy(experiment_1_sublist)])
 
     file_name = 'experiment_1_' + local_queueing_system.name + '.qsr'
     with open('experiment_results/' + file_name, mode='w') as res_file:
         res_file.write(str(experiment_1_result_list))
         yaml.dump(experiment_1_result_list, res_file, default_flow_style=False)
+
+    build_plot(experiment_1_result_list,
+               'P- от 1/kappa_1',
+               'P-',
+               '1/kappa_1',
+               'experiment_1')
 
 
 def experiment_2(queueing_system: ColdReserveQueueingSystem):

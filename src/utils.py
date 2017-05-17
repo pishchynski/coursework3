@@ -3,7 +3,6 @@ from time import sleep
 
 import numpy as np
 import scipy.linalg as la
-import copy
 
 
 def kron(A, B):
