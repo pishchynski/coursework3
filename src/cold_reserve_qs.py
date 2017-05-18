@@ -729,10 +729,8 @@ class ColdReserveQueueingSystem:
         # Check ergodicity condition
         is_ergodicic, ergodicity, vect_y = self.ergodicity_check(matrQ_k)
         if not is_ergodicic:
-            print('Условие эргодичности не выполняется!', file=sys.stderr)
-            print(ergodicity, '>= 0', file=sys.stderr)
-            print('Выполнение программы остановлено!', file=sys.stderr)
-            exit()  # Replace with return or smth else to detect iteration
+            print(self.calc_system_load(vect_y), '> 1', file=sys.stderr)
+            raise ValueError('Ergodicity condition violation!')
         # else:
         #     print('Условие эргодичности выполняется!')
         #     print(ergodicity, '< 0')

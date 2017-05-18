@@ -2,7 +2,7 @@ from src.experiments import *
 
 
 def run_test():
-    queueing_system = ColdReserveQueueingSystem(name="System_20170516", p_num=150)
+    queueing_system = ColdReserveQueueingSystem(name="System_20170516_many", p_num=150)
     queueing_system.set_BMAP_queries_stream(matrD_0=np.array([[-86., 0.01], [0.02, -2.76]]),
                                             matrD=np.array([[85., 0.99], [0.2, 2.54]]),
                                             n=3,
@@ -26,12 +26,13 @@ def run_test():
 
 if __name__ == '__main__':
     q_system = run_test()
-    experiment_1(q_system)
-    # experiment_2(q_system)
-    # experiment_3(q_system)
-    # experiment_4(q_system)
-    # experiment_5(q_system)
-    # experiment_6(q_system)
-    # experiment_7(q_system)
-    # experiment_8(q_system)
-    # experiment_9(q_system)
+    read_file = False
+    experiment_1(q_system, read_file=read_file)
+    experiment_2(q_system, read_file=read_file)
+    experiment_3(q_system, read_file=read_file)
+    experiment_4(q_system, read_file=read_file)
+    experiment_5(q_system, read_file=read_file)
+    experiment_6(q_system, read_file=read_file)
+    experiment_7(q_system, read_file=read_file)
+    experiment_8(q_system, read_file=read_file)
+    experiment_9(q_system, read_file=read_file)
