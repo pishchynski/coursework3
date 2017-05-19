@@ -812,7 +812,7 @@ class ColdReserveQueueingSystem:
                                              avg_switch_1_2_num),
                                             ("""Среднее число переключений с прибора 2 на прибор 1 в единицу времени""",
                                              abs(avg_switch_2_1_num)),
-                                            ('Среднее время нахождения заявки в системе', avg_queries_num)])
+                                            ('Среднее время нахождения заявки в системе', avg_service_time)])
 
         return characteristics_dict, vect_p_l
 
