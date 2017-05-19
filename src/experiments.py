@@ -1,10 +1,12 @@
-from itertools import cycle
 import ast
-import matplotlib.pyplot as plt
-import yaml
-from tqdm import tqdm
 import traceback
+from itertools import cycle
+
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+
 from src.cold_reserve_qs import *
+
 
 # todo Check ALL paths in Linux!
 
@@ -89,7 +91,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_1_result_list))
         except ValueError as e:
             print(str(e))
-            file_name = 'experiment_1_except' + local_queueing_system.name + '.qsr'
+            file_name = 'experiment_1_except' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_1_result_list))
         except Exception:
@@ -152,7 +154,7 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                     res_file.write(str(experiment_2_result_list))
         except ValueError as e:
             print(str(e))
-            file_name = 'experiment_2_except' + local_queueing_system.name + '.qsr'
+            file_name = 'experiment_2_except' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_2_result_list))
         except Exception:
@@ -211,7 +213,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_3_result_list))
         except ValueError as e:
             print(str(e))
-            file_name = 'experiment_3_except' + local_queueing_system.name + '.qsr'
+            file_name = 'experiment_3_except' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_3_result_list))
         except Exception:
@@ -271,7 +273,7 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_4_result_list))
         except ValueError as e:
             print(str(e))
-            file_name = 'experiment_4_except' + local_queueing_system.name + '.qsr'
+            file_name = 'experiment_4_except' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_4_result_list))
         except Exception:
@@ -332,7 +334,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_5_result_list))
         except ValueError as e:
             print(str(e))
-            file_name = 'experiment_5_except' + local_queueing_system.name + '.qsr'
+            file_name = 'experiment_5_except' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_5_result_list))
         except Exception:
@@ -398,7 +400,7 @@ def experiment_6(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_6_result_list))
         except ValueError as e:
             print(str(e))
-            file_name = 'experiment_6_except' + local_queueing_system.name + '.qsr'
+            file_name = 'experiment_6_except' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_6_result_list))
         except Exception:
@@ -464,7 +466,7 @@ def experiment_7(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_7_result_list))
         except ValueError as e:
             print(str(e))
-            file_name = 'experiment_7_except' + local_queueing_system.name + '.qsr'
+            file_name = 'experiment_7_except' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_7_result_list))
         except Exception:
@@ -524,7 +526,7 @@ def experiment_8(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_8_result_list))
         except ValueError as e:
             print(str(e))
-            file_name = 'experiment_8_except' + local_queueing_system.name + '.qsr'
+            file_name = 'experiment_8_except' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_8_result_list))
         except Exception:
@@ -583,7 +585,7 @@ def experiment_9(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_9_result_list))
         except ValueError as e:
             print(str(e))
-            file_name = 'experiment_9_except' + local_queueing_system.name + '.qsr'
+            file_name = 'experiment_9_except' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_9_result_list))
         except Exception:
@@ -599,3 +601,249 @@ def experiment_9(queueing_system: ColdReserveQueueingSystem, read_file=False):
                '\\lambda',
                '\\rho',
                'experiment_9')
+
+
+def experiment_10(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость u_ от \lambda при различных коэффициентах корреляции во входящем потоке
+
+    :param queueing_system:
+    :param read_file:
+    :return:
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 10 launched!')
+
+    experiment_10_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            queries_matrices = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices)
+            matrD = copy.deepcopy(local_queueing_system.queries_stream.matrD)
+
+            for cor_coef in (0.01, 1, 100):
+                linux_check_cpu_temperature()
+
+                matrD_10 = copy.deepcopy(matrD)
+                matrD_10[0] *= cor_coef
+                local_queueing_system.set_BMAP_queries_stream(queries_matrices[0], matrD_10,
+                                                              q=local_queueing_system.queries_stream.q,
+                                                              n=local_queueing_system.n)
+                experiment_10_sublist = [local_queueing_system.queries_stream.c_cor, []]
+                for queries_coef in tqdm([i / 500 for i in range(1, 1001)]):
+                    matrD_0_1 = copy.deepcopy(
+                        local_queueing_system.queries_stream.transition_matrices[0]) * queries_coef
+                    matrD_1 = copy.deepcopy(local_queueing_system.queries_stream.matrD) * queries_coef
+                    local_queueing_system.set_BMAP_queries_stream(matrD_0_1, matrD_1,
+                                                                  q=local_queueing_system.queries_stream.q,
+                                                                  n=local_queueing_system.n)
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_10_sublist[1].append([local_queueing_system.queries_stream.avg_intensity,
+                                                    list(characteristics.items())[13][1]])
+                experiment_10_result_list.append(copy.deepcopy(experiment_10_sublist))
+
+            file_name = 'experiment_10_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_10_result_list))
+        except ValueError as e:
+            print(str(e))
+            file_name = 'experiment_10_except' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_10_result_list))
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+    else:
+        file_name = 'experiment_10_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_10_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_10_result_list,
+               'L от u_',
+               'u_',
+               'L',
+               'experiment_10')
+
+
+def experiment_11(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость u_ от h при различных коэффициентах вариации c_var времени ремонта
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 11 launched!')
+
+    experiment_11_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+
+            for repair_vect_elem in (0.1, 0.5, 0.9):
+                linux_check_cpu_temperature()
+
+                local_queueing_system.set_PH_repair_stream(np.array([[repair_vect_elem, 1 - repair_vect_elem]]),
+                                                           local_queueing_system.repair_stream.repres_matr)
+                experiment_11_sublist = [local_queueing_system.repair_stream.c_var, []]
+                for break_coef in tqdm([i / 5 for i in range(1, 101)]):
+                    break_matrices_1 = copy.deepcopy(break_matrices)
+                    break_matrices_1[0] *= break_coef
+                    break_matrices_1[1] *= break_coef
+                    local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_11_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
+                                                    list(characteristics.items())[13][1]])
+                experiment_11_result_list.append(copy.deepcopy(experiment_11_sublist))
+
+            file_name = 'experiment_11_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_11_result_list))
+        except ValueError as e:
+            print(str(e))
+            file_name = 'experiment_11_except' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_11_result_list))
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+    else:
+        file_name = 'experiment_11_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_11_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_11_result_list,
+               'u_ от h',
+               'h',
+               'u_',
+               'experiment_11')
+
+
+def experiment_12(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость u_ от h при различных коэффициентах корреляции c_cor времени ремонта
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 12 launched!')
+
+    experiment_12_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+
+            for repair_vect_elem in (0.1, 0.5, 0.9):
+                linux_check_cpu_temperature()
+
+                local_queueing_system.set_PH_repair_stream(np.array([[repair_vect_elem, 1 - repair_vect_elem]]),
+                                                           local_queueing_system.repair_stream.repres_matr)
+                experiment_12_sublist = [local_queueing_system.repair_stream.c_cor, []]
+                for break_coef in tqdm([i / 5 for i in range(1, 101)]):
+                    break_matrices_1 = copy.deepcopy(break_matrices)
+                    break_matrices_1[0] *= break_coef
+                    break_matrices_1[1] *= break_coef
+                    local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_12_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
+                                                    list(characteristics.items())[13][1]])
+                experiment_12_result_list.append(copy.deepcopy(experiment_12_sublist))
+
+            file_name = 'experiment_12_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_12_result_list))
+        except ValueError as e:
+            print(str(e))
+            file_name = 'experiment_12_except' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_12_result_list))
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+    else:
+        file_name = 'experiment_12_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_12_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_12_result_list,
+               'u_ от h',
+               'h',
+               'u_',
+               'experiment_12')
+
+
+def experiment_13(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость u_ от lambda при различных значениях h.
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 13 launched!')
+
+    experiment_13_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            queries_matrices = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices)
+            break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+
+            for break_coef in (0.1, 1, 10):
+                linux_check_cpu_temperature()
+
+                break_matrices_1 = [matr * break_coef for matr in break_matrices]  # todo Check if copy necessary
+                local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+                experiment_13_sublist = [local_queueing_system.break_stream.avg_intensity, []]
+                for queries_coef in tqdm([i / 500 for i in range(1, 1001)]):
+                    queries_matrices_1 = [matr * queries_coef for matr in queries_matrices]
+                    local_queueing_system.queries_stream.set_transition_matrices(queries_matrices_1)
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_13_sublist[1].append([local_queueing_system.queries_stream.avg_intensity,
+                                                 list(characteristics.items())[2][1]])
+                experiment_13_result_list.append(copy.deepcopy(experiment_13_sublist))
+
+            file_name = 'experiment_13_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_13_result_list))
+        except ValueError as e:
+            print(str(e))
+            file_name = 'experiment_13_except' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_13_result_list))
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+    else:
+        file_name = 'experiment_13_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_13_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_13_result_list,
+               'u_ от \\lambda',
+               '\\lambda',
+               'u_',
+               'experiment_13')

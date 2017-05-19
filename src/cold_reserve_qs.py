@@ -699,6 +699,9 @@ class ColdReserveQueueingSystem:
         temp_matr += r_multiply_e(temp_matr2)
         return temp_matr[0, 0]
 
+    def calc_avg_service_time(self, avg_queries_num):
+        return avg_queries_num / self.queries_stream.avg_intensity
+
     def calc_characteristics(self, verbose=True):
         if verbose:
             print('======= Input BMAP Parameters =======')
@@ -772,7 +775,9 @@ class ColdReserveQueueingSystem:
 
         avg_switch_1_2_num = self.calc_avg_switch_1_2_num(vect_p_l, vect_P_1_)
 
-        avg_switch_2_1_num = self.calc_avg_switch_2_1_num(vect_p_l, vect_P_1_)  # Check formulae!
+        avg_switch_2_1_num = self.calc_avg_switch_2_1_num(vect_p_l, vect_P_1_)
+
+        avg_service_time = avg_queries_num / self.queries_stream.avg_intensity
 
         # characteristics = [system_load, system_capacity,
         #                    avg_queries_num, queries_num_dispersion,
@@ -806,7 +811,8 @@ class ColdReserveQueueingSystem:
                                             ("""Среднее число переключений с прибора 1 на прибор 2 в единицу времени""",
                                              avg_switch_1_2_num),
                                             ("""Среднее число переключений с прибора 2 на прибор 1 в единицу времени""",
-                                             abs(avg_switch_2_1_num))])  # todo Carefully check formulae!
+                                             abs(avg_switch_2_1_num)),
+                                            ('Среднее время нахождения заявки в системе', avg_queries_num)])
 
         return characteristics_dict, vect_p_l
 
