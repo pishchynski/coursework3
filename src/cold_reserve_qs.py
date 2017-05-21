@@ -702,6 +702,31 @@ class ColdReserveQueueingSystem:
     def calc_avg_service_time(self, avg_queries_num):
         return avg_queries_num / self.queries_stream.avg_intensity
 
+    def print_characteristics(self, filename):
+        with open(filename, mode='a') as char_file:
+            char_file.write('======= Input BMAP Parameters =======')
+            char_file.write(self.queries_stream.print_characteristics('D'))
+
+            char_file.write('======= MAP breakdowns parameters =======')
+            char_file.write(self.break_stream.print_characteristics('H'))
+
+            char_file.write('======= PH_1 service time parameters =======')
+            char_file.write(self.serv_unit1_stream.print_characteristics('S_1', 'beta_1'))
+
+            char_file.write('======= PH_2 service time parameters =======')
+            char_file.write(self.serv_unit2_stream.print_characteristics('S_2', 'beta_2'))
+
+            char_file.write('======= PH_1, 2 switching time parameters =======')
+            char_file.write(self.switch1_2_stream.print_characteristics('A_1', 'alpha_1'))
+
+            char_file.write('======= PH_2, 1 switching time parameters =======')
+            char_file.write(self.switch2_1_stream.print_characteristics('A_2', 'alpha_2'))
+
+            char_file.write('======= Repair time parameters =======')
+            char_file.write(self.repair_stream.print_characteristics('T', 'tau'))
+
+            char_file.write('==========END==========\n')
+
     def calc_characteristics(self, verbose=True):
         if verbose:
             print('======= Input BMAP Parameters =======')

@@ -58,6 +58,8 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
     print('Experiment 1 launched!')
 
+
+
     experiment_1_result_list = []
 
     if not read_file:
@@ -71,13 +73,17 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
             switch1_2_matr = copy.deepcopy(local_queueing_system.switch1_2_stream.repres_matr)
             switch1_2_vect = copy.deepcopy(local_queueing_system.switch1_2_stream.repres_vect)
 
-            for switch2_1_coef in (0.001, 1, 1000):
+            for switch2_1_coef in (0.001, 0.1, 10):
                 linux_check_cpu_temperature()
 
                 switch2_1_matr_1 = copy.deepcopy(switch2_1_matr) * switch2_1_coef
                 local_queueing_system.set_PH_switch2_1_stream(switch2_1_vect, switch2_1_matr_1)
+
+                filename = '../experiment_results/' + 'experiment_1_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_1_sublist = [local_queueing_system.switch2_1_stream.avg_intensity, []]
-                for switch1_2_coef in tqdm([i / 50 for i in range(1, 1001)]):
+                for switch1_2_coef in tqdm([i / 50 for i in range(1, 101)]):
                     switch1_2_matr_1 = copy.deepcopy(switch1_2_matr) * switch1_2_coef
                     local_queueing_system.set_PH_switch1_2_stream(switch1_2_vect, switch1_2_matr_1)
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
@@ -139,6 +145,10 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 switch2_1_matr_1 = copy.deepcopy(switch2_1_matr) * switch2_1_coef  # todo Check if copy necessary
                 local_queueing_system.set_PH_switch2_1_stream(switch2_1_vect, switch2_1_matr_1)
+
+                filename = '../experiment_results/' + 'experiment_2_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_2_sublist = [local_queueing_system.switch2_1_stream.avg_intensity, []]
                 for switch1_2_coef in tqdm([i / 50 for i in range(1, 1001)]):
                     switch1_2_matr_1 = copy.deepcopy(switch1_2_matr) * switch1_2_coef
@@ -198,6 +208,10 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 break_matrices_1 = [matr * break_coef for matr in break_matrices]  # todo Check if copy necessary
                 local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+
+                filename = '../experiment_results/' + 'experiment_3_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_3_sublist = [local_queueing_system.break_stream.avg_intensity, []]
                 for queries_coef in tqdm([i / 500 for i in range(1, 1001)]):
                     queries_matrices_1 = [matr * queries_coef for matr in queries_matrices]
@@ -257,6 +271,10 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 matrD_10 = copy.deepcopy(matrD)
                 matrD_10[0] *= cor_coef
                 local_queueing_system.set_BMAP_queries_stream(queries_matrices[0], matrD_10, q=local_queueing_system.queries_stream.q, n=local_queueing_system.n)
+
+                filename = '../experiment_results/' + 'experiment_4_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_4_sublist = [local_queueing_system.queries_stream.c_cor, []]
                 for queries_coef in tqdm([i / 500 for i in range(1, 1001)]):
                     matrD_0_1 = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices[0]) * queries_coef
@@ -318,6 +336,10 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 matrD_10 = copy.deepcopy(matrD)
                 matrD_10[0] *= cor_coef
                 local_queueing_system.set_BMAP_queries_stream(queries_matrices[0], matrD_10, q=local_queueing_system.queries_stream.q, n=local_queueing_system.n)
+
+                filename = '../experiment_results/' + 'experiment_5_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_5_sublist = [local_queueing_system.queries_stream.c_cor, []]
                 for queries_coef in tqdm([i / 100 for i in range(1, 1001)]):
                     matrD_0_1 = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices[0]) * queries_coef
@@ -383,6 +405,10 @@ def experiment_6(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 break_matrices_0 = [break_matr0, break_matr1]
 
                 local_queueing_system.set_MAP_break_stream(break_matrices_0[0], break_matrices_0[1])
+
+                filename = '../experiment_results/' + 'experiment_6_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_6_sublist = [local_queueing_system.break_stream.c_cor, []]
                 for break_coef in tqdm([i / 50 for i in range(1, 1001)]):
                     break_matrices_1 = copy.deepcopy(break_matrices_0)
@@ -449,6 +475,10 @@ def experiment_7(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 break_matrices_0 = [break_matr0, break_matr1]
 
                 local_queueing_system.set_MAP_break_stream(break_matrices_0[0], break_matrices_0[1])
+
+                filename = '../experiment_results/' + 'experiment_7_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_7_sublist = [local_queueing_system.break_stream.c_cor, []]
                 for break_coef in tqdm([i / 50 for i in range(1, 1001)]):
                     break_matrices_1 = copy.deepcopy(break_matrices_0)
@@ -509,6 +539,10 @@ def experiment_8(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 local_queueing_system.set_PH_repair_stream(np.array([[repair_vect_elem, 1 - repair_vect_elem]]),
                                                            local_queueing_system.repair_stream.repres_matr)
+
+                filename = '../experiment_results/' + 'experiment_8_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_8_sublist = [local_queueing_system.repair_stream.c_var, []]
                 for break_coef in tqdm([i / 50 for i in range(1, 1001)]):
                     break_matrices_1 = copy.deepcopy(break_matrices)
@@ -570,6 +604,10 @@ def experiment_9(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 break_matrices_1 = [matr * break_coef for matr in break_matrices]  # todo Check if copy necessary
                 local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+
+                filename = '../experiment_results/' + 'experiment_9_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_9_sublist = [local_queueing_system.break_stream.avg_intensity, []]
                 for queries_coef in tqdm([i / 50 for i in range(1, 1001)]):
                     queries_matrices_1 = [matr * queries_coef for matr in queries_matrices]
@@ -633,6 +671,10 @@ def experiment_10(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 local_queueing_system.set_BMAP_queries_stream(queries_matrices[0], matrD_10,
                                                               q=local_queueing_system.queries_stream.q,
                                                               n=local_queueing_system.n)
+
+                filename = '../experiment_results/' + 'experiment_10_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_10_sublist = [local_queueing_system.queries_stream.c_cor, []]
                 for queries_coef in tqdm([i / 500 for i in range(1, 1001)]):
                     matrD_0_1 = copy.deepcopy(
@@ -695,6 +737,10 @@ def experiment_11(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 local_queueing_system.set_PH_repair_stream(np.array([[repair_vect_elem, 1 - repair_vect_elem]]),
                                                            local_queueing_system.repair_stream.repres_matr)
+
+                filename = '../experiment_results/' + 'experiment_11_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_11_sublist = [local_queueing_system.repair_stream.c_var, []]
                 for break_coef in tqdm([i / 5 for i in range(1, 101)]):
                     break_matrices_1 = copy.deepcopy(break_matrices)
@@ -755,6 +801,10 @@ def experiment_12(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 local_queueing_system.set_PH_repair_stream(np.array([[repair_vect_elem, 1 - repair_vect_elem]]),
                                                            local_queueing_system.repair_stream.repres_matr)
+
+                filename = '../experiment_results/' + 'experiment_12_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_12_sublist = [local_queueing_system.repair_stream.c_cor, []]
                 for break_coef in tqdm([i / 5 for i in range(1, 101)]):
                     break_matrices_1 = copy.deepcopy(break_matrices)
@@ -816,6 +866,10 @@ def experiment_13(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 break_matrices_1 = [matr * break_coef for matr in break_matrices]  # todo Check if copy necessary
                 local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+
+                filename = '../experiment_results/' + 'experiment_13_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
                 experiment_13_sublist = [local_queueing_system.break_stream.avg_intensity, []]
                 for queries_coef in tqdm([i / 500 for i in range(1, 1001)]):
                     queries_matrices_1 = [matr * queries_coef for matr in queries_matrices]
@@ -847,3 +901,129 @@ def experiment_13(queueing_system: ColdReserveQueueingSystem, read_file=False):
                '\\lambda',
                'u_',
                'experiment_13')
+
+
+def experiment_14(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость количества переключений с прибора-1 на прибор-2, \khi_{1,2} от 1/kappa_1 при различных значениях h.
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 14 launched!')
+
+    experiment_14_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            queries_matrices = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices)
+            break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+
+            for break_coef in (0.1, 1, 10):
+                linux_check_cpu_temperature()
+
+                break_matrices_1 = [matr * break_coef for matr in break_matrices]  # todo Check if copy necessary
+                local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+
+                filename = '../experiment_results/' + 'experiment_14_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
+                experiment_14_sublist = [local_queueing_system.break_stream.avg_intensity, []]
+                for queries_coef in tqdm([i / 50 for i in range(1, 1001)]):
+                    queries_matrices_1 = [matr * queries_coef for matr in queries_matrices]
+                    local_queueing_system.queries_stream.set_transition_matrices(queries_matrices_1)
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_14_sublist[1].append([1 / local_queueing_system.switch1_2_stream.avg_intensity,
+                                                 list(characteristics.items())[11][1]])
+                experiment_14_result_list.append(copy.deepcopy(experiment_14_sublist))
+
+            file_name = 'experiment_14_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_14_result_list))
+        except ValueError as e:
+            print(str(e))
+            file_name = 'experiment_14_except' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_14_result_list))
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+    else:
+        file_name = 'experiment_14_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_14_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_14_result_list,
+               '\\khi_{1,2} от h',
+               'h',
+               '\\khi_{1,2}',
+               'experiment_14')
+
+
+def experiment_15(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость количества переключений с прибора-2 на прибор-1, \khi_{2,1} от 1/kappa_2 при различных значениях h.
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :return: None
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 15 launched!')
+
+    experiment_15_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            queries_matrices = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices)
+            break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+
+            for break_coef in (0.1, 1, 10):
+                linux_check_cpu_temperature()
+
+                break_matrices_1 = [matr * break_coef for matr in break_matrices]  # todo Check if copy necessary
+                local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+
+                filename = '../experiment_results/' + 'experiment_15_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+
+                experiment_15_sublist = [local_queueing_system.break_stream.avg_intensity, []]
+                for queries_coef in tqdm([i / 50 for i in range(1, 1001)]):
+                    queries_matrices_1 = [matr * queries_coef for matr in queries_matrices]
+                    local_queueing_system.queries_stream.set_transition_matrices(queries_matrices_1)
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_15_sublist[1].append([1 / local_queueing_system.switch2_1_stream.avg_intensity,
+                                                 list(characteristics.items())[12][1]])
+                experiment_15_result_list.append(copy.deepcopy(experiment_15_sublist))
+
+            file_name = 'experiment_15_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_15_result_list))
+        except ValueError as e:
+            print(str(e))
+            file_name = 'experiment_15_except' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_15_result_list))
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+    else:
+        file_name = 'experiment_15_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_15_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_15_result_list,
+               '\\khi_{2,1} от h',
+               'h',
+               '\\khi_{2,1}',
+               'experiment_15')
