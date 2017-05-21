@@ -1,3 +1,4 @@
+import sys
 from sys import stderr
 from time import sleep
 
@@ -85,7 +86,7 @@ def e_col(dim):
     return np.array([[1.] for _ in range(dim)])
 
 
-def matr_print(matr):
+def matr_print(matr, file=sys.stdout):
     """
     Pretty prints the given matrix.
 
@@ -97,7 +98,7 @@ def matr_print(matr):
     lens = [max(map(len, col)) for col in zip(*s)]
     fmt = '\t'.join('{{:{}}}'.format(x) for x in lens)
     table = [fmt.format(*row) for row in s]
-    print('\n'.join(table))
+    print('\n'.join(table), file=file)
 
 
 def linux_check_cpu_temperature():

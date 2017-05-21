@@ -1,5 +1,6 @@
-from math import sqrt
 import copy
+from math import sqrt
+
 from src.utils import *
 
 
@@ -10,7 +11,7 @@ class MAPStream:
     sum of transition matrices, variation coefficient and correlation coefficient.
     """
 
-    def print_characteristics(self, matrix_name):
+    def print_characteristics(self, matrix_name, file=sys.stdout):
         """
         Prints characteristics of MAP stream:
         Average intensity
@@ -20,13 +21,13 @@ class MAPStream:
         """
 
         for i, matr in enumerate(self.transition_matrices):
-            print(matrix_name + '_' + str(i), ':')
-            matr_print(matr)
+            print(matrix_name + '_' + str(i), ':', file=file)
+            matr_print(matr, file=file)
 
-        print('Average intensity:', self.avg_intensity)
-        print('Variation coefficient:', self.c_var)
-        print('Correlation coefficient:', self.c_cor)
-        print('=======END=======', '\n')
+        print('Average intensity:', self.avg_intensity, file=file)
+        print('Variation coefficient:', self.c_var, file=file)
+        print('Correlation coefficient:', self.c_cor, file=file)
+        print('=======END=======', '\n', file=file)
 
     def __init__(self, transition_matr0, transition_matr1):
         """
@@ -59,7 +60,7 @@ class BMAPStream:
     variation coefficient and correlation coefficient.
     """
 
-    def print_characteristics(self, matrix_name):
+    def print_characteristics(self, matrix_name, file=sys.stdout):
         """
         Prints characteristics of BMAP stream:
         Matrices
@@ -71,14 +72,14 @@ class BMAPStream:
         """
 
         for i, matr in enumerate(self.transition_matrices):
-            print(matrix_name + '_' + str(i), ':')
-            matr_print(matr)
+            print(matrix_name + '_' + str(i), ':', file=file)
+            matr_print(matr, file=file)
 
-        print('Average intensity:', self.avg_intensity)
-        print('Average batch intensity:', self.batch_intensity)
-        print('Variation coefficient:', self.c_var)
-        print('Correlation coefficient:', self.c_cor)
-        print('=======END=======', '\n')
+        print('Average intensity:', self.avg_intensity, file=file)
+        print('Average batch intensity:', self.batch_intensity, file=file)
+        print('Variation coefficient:', self.c_var, file=file)
+        print('Correlation coefficient:', self.c_cor, file=file)
+        print('=======END=======', '\n', file=file)
 
     def __init__(self, matrD_0, matrD, q, n):
         """
@@ -151,7 +152,7 @@ class PHStream:
     variation coefficient and correlation coefficient.
     """
 
-    def print_characteristics(self, matrix_name, vector_name):
+    def print_characteristics(self, matrix_name, vector_name, file=sys.stdout):
         """
         Prints characteristics of PH stream:
         Matrix
@@ -162,14 +163,14 @@ class PHStream:
         :return: None
         """
 
-        print(matrix_name, ':')
-        matr_print(self.repres_matr)
-        print(vector_name, ':')
-        print(self.repres_vect[0])
+        print(matrix_name, ':', file=file)
+        matr_print(self.repres_matr, file=file)
+        print(vector_name, ':', file=file)
+        print(self.repres_vect[0], file=file)
 
-        print('Average intensity:', self.avg_intensity)
-        print('Variation coefficient:', self.c_var)
-        print('=======END=======', '\n')
+        print('Average intensity:', self.avg_intensity, file=file)
+        print('Variation coefficient:', self.c_var, file=file)
+        print('=======END=======', '\n', file=file)
 
     def __init__(self, repres_vect, repres_matr):
         """

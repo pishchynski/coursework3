@@ -27,7 +27,7 @@ def run_test():
 if __name__ == '__main__':
     q_system = run_test()
     read_file = False
-    # experiment_1(q_system, read_file=read_file)
+    experiment_1(q_system, read_file=read_file)
     # experiment_2(q_system, read_file=read_file)
     # experiment_3(q_system, read_file=read_file)
     # experiment_4(q_system, read_file=read_file)
