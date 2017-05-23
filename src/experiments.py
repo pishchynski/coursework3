@@ -1,6 +1,5 @@
 import ast
 import traceback
-from distutils import log
 from itertools import cycle
 import math
 import matplotlib.pyplot as plt
@@ -13,7 +12,7 @@ from src.cold_reserve_qs import *
 # todo Check ALL paths in Linux!
 
 
-def build_plot(experiment_result_list, experiment_name, x_label, y_label, file_name='experiment_plot', file_type='png'):
+def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_label, file_name='experiment_plot', file_type='png'):
     """
     Builds experiment plots and saves them to file.
 
@@ -40,9 +39,9 @@ def build_plot(experiment_result_list, experiment_name, x_label, y_label, file_n
         exp_param = experiments[0]
         x_list = [x[0] for x in experiments[1]]
         y_list = [x[1] for x in experiments[1]]
-        plt.plot(x_list, y_list, next(linecycler), label=str(exp_param))
+        plt.plot(x_list, y_list, next(linecycler), label=leg_label + ' = ' + str(exp_param))
 
-    plt.legend(loc=1)
+    plt.legend(loc=4)
     plot_filename = '../experiment_plots/' + file_name + '.' + file_type
     fig.savefig(filename=plot_filename, dpi=1000, format=file_type)
 
@@ -114,6 +113,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                'P- от 1/kappa_1',
                '1/kappa_1',
                'P-',
+               '1/kappa_2',
                'experiment_1')
 
 
