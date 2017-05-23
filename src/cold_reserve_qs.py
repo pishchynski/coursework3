@@ -1,5 +1,6 @@
 from collections import OrderedDict
-
+import sys
+sys.path.append("../")
 from src.streams import *
 
 np.set_printoptions(threshold=np.inf, suppress=True, formatter={'float': '{: 0.8f}'.format}, linewidth=75)

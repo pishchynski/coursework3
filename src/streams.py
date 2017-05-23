@@ -1,6 +1,7 @@
 import copy
 from math import sqrt
-
+import sys
+sys.path.append("../")
 from src.utils import *
 
 

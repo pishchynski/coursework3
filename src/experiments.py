@@ -1,10 +1,12 @@
 import ast
 import traceback
+from distutils import log
 from itertools import cycle
-
+import math
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-
+import sys
+sys.path.append("../")
 from src.cold_reserve_qs import *
 
 
@@ -83,7 +85,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 local_queueing_system.print_characteristics(filename)
 
                 experiment_1_sublist = [local_queueing_system.switch2_1_stream.avg_intensity, []]
-                for switch1_2_coef in tqdm([i / 100000 for i in range(1, 101)]):
+                for switch1_2_coef in tqdm([(i / 2) * math.log(i) / 100000 if i < 11 else i / 100000 for i in range(2, 102)]):
                     switch1_2_matr_1 = copy.deepcopy(switch1_2_matr) * switch1_2_coef
                     local_queueing_system.set_PH_switch1_2_stream(switch1_2_vect, switch1_2_matr_1)
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
