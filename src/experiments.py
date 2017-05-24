@@ -36,7 +36,7 @@ def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_la
     linecycler = cycle(lines)
 
     for num, experiments in enumerate(experiment_result_list):
-        exp_param = experiments[0]
+        exp_param = 1/experiments[0]
         x_list = [x[0] for x in experiments[1]]
         y_list = [x[1] for x in experiments[1]]
         plt.plot(x_list, y_list, next(linecycler), label=leg_label + ' = ' + str(exp_param))
@@ -74,18 +74,31 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
             switch1_2_matr = copy.deepcopy(local_queueing_system.switch1_2_stream.repres_matr)
             switch1_2_vect = copy.deepcopy(local_queueing_system.switch1_2_stream.repres_vect)
 
-            for switch2_1_coef in (0.001, 0.1, 10):
+            s = 1.15293
+
+            for switch2_1_coef in (0.000001, 0.00001, 0.0001):
                 linux_check_cpu_temperature()
 
                 switch2_1_matr_1 = copy.deepcopy(switch2_1_matr) * switch2_1_coef
                 local_queueing_system.set_PH_switch2_1_stream(switch2_1_vect, switch2_1_matr_1)
 
+                characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
                 filename = '../experiment_results/' + 'experiment_1_' + queueing_system.name + '.qsc'
                 local_queueing_system.print_characteristics(filename)
+                with open(filename, mode="a") as file:
+                    for i, vect in enumerate(vect_p_l):
+                        print("P_{} = ".format(str(i)), np.sum(vect), file=file)
+
+                    for i, charact in enumerate(characteristics.keys()):
+                        print("{}. ".format(str(i)), charact, ':', characteristics[charact], file=file)
+                    print("============== END SYSTEM =================", file=file)
 
                 experiment_1_sublist = [local_queueing_system.switch2_1_stream.avg_intensity, []]
-                for switch1_2_coef in tqdm([(i / 2) * math.log(i) / 100000 if i < 11 else i / 100000 for i in range(2, 102)]):
+                for switch1_2_coef in tqdm([0.00001 * (s ** i) for i in range(0, 100)]):
+
                     switch1_2_matr_1 = copy.deepcopy(switch1_2_matr) * switch1_2_coef
+
                     local_queueing_system.set_PH_switch1_2_stream(switch1_2_vect, switch1_2_matr_1)
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
@@ -110,10 +123,10 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
         experiment_1_result_list = ast.literal_eval(res_line)
 
     build_plot(experiment_1_result_list,
-               'P- от 1/kappa_1',
-               '1/kappa_1',
+               'P- от a_1',
+               'a_1',
                'P-',
-               '1/kappa_2',
+               'a_2',
                'experiment_1')
 
 
