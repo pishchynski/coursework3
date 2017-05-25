@@ -251,15 +251,15 @@ class ColdReserveQueueingSystem:
     def _calc_cal_Q(self):
         block00 = kronsum(kron(np.eye(self.queries_stream.dim_),
                                self.break_stream.transition_matrices[0]),
-                          self.serv_unit1_stream.repres_matr)
+                          self.serv_unit1_stream.repres_matr)                               # Checked 26.05.17
         block03 = kron(kron(kron(kron(np.eye(self.queries_stream.dim_),
                                       self.break_stream.transition_matrices[1]),
                                  e_col(self.serv_unit1_stream.dim)),
                             self.repair_stream.repres_vect),
                        self.switch1_2_stream.repres_vect)
-        block10 = kron(kron(kron(np.eye(self.a),
-                                 e_col(self.serv_unit2_stream.dim)),
-                            self.serv_unit1_stream.repres_vect),
+        block10 = kron(kron(np.eye(self.a),
+                            np.dot(e_col(self.serv_unit2_stream.dim),
+                                   self.serv_unit1_stream.repres_vect)),
                        self.switch2_1_stream.repres_matr_0)
         block11 = kronsum(kronsum(kron(np.eye(self.queries_stream.dim_),
                                        self.break_stream.transition_matrices[0]),
