@@ -437,6 +437,7 @@ class ColdReserveQueueingSystem:
 
     def _calc_p_l(self, matrQ_il, matrPhi_l):
         p0 = self._calc_p_0(matrQ_il, matrPhi_l)
+        print('p_0 shape', p0.shape)
         vect_p_l = [p0]
         p_sums = [np.sum(p0)]
         # print('p0 = ', vect_p_l[0][0])
@@ -559,6 +560,17 @@ class ColdReserveQueueingSystem:
         for l in range(3, self._p_num):
             vect_ddP_1_ += l * (l - 1) * vectors[l]
         return vect_ddP_1_
+
+    def get_prod_func_fast(self, vectors, level=0):
+        """
+        Get vector production function in z=0 fast.
+
+        :param vectors: vectors p_i
+        :param level: derivative level. 0 is default
+        :return: prod func in z=0 of level given
+        """
+
+
 
     def calc_avg_queries_num(self, vect_dP_1_):
         L = r_multiply_e(vect_dP_1_)[0, 0]
@@ -762,7 +774,7 @@ class ColdReserveQueueingSystem:
         # Check ergodicity condition
         is_ergodicic, ergodicity, vect_y = self.ergodicity_check(matrQ_k)
         system_load = self.calc_system_load(vect_y)
-        if not is_ergodicic:
+        if system_load > 1:
             print(system_load, '> 1', file=sys.stderr)
             raise ValueError('Ergodicity condition violation!')
         # else:

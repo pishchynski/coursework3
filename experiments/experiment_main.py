@@ -11,6 +11,7 @@ def run_test():
                                             n=3,
                                             q=0.8)
     queueing_system.set_MAP_break_stream(np.array([[-8., 1.], [2., -12.]]), np.array([[2., 5.], [4., 6.]]))
+    # queueing_system.set_MAP_break_stream(np.array([[-8.5]]), np.array([[8.5]]))
     queueing_system.set_PH_serv_unit1_stream(np.array([[0.2, 0.8]]), np.array([[-170., 15.], [40., -210.]]))
     queueing_system.set_PH_serv_unit2_stream(np.array([[0.9, 0.1]]), np.array([[-110., 80.], [10., -150.]]))
     queueing_system.set_PH_switch1_2_stream(np.array([[0.9, 0.1]]), np.array([[-220., 160.], [20., -300.]]))
@@ -39,4 +40,4 @@ if __name__ == '__main__':
     # experiment_7(q_system, read_file=read_file)
     # experiment_8(q_system, read_file=read_file)
     # experiment_9(q_system, read_file=read_file)
-    experiment_10(q_system, read_file=read_file)
+    # experiment_11(q_system, read_file=read_file)

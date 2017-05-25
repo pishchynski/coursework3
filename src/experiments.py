@@ -685,7 +685,7 @@ def experiment_10(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 queries_matrices_0 = copy.deepcopy(queries_matrices)
 
                 if cor_coef == 1:
-                    queries_matrices_0[0] = np.array([[-6., 0.01], [0.02, -2.76]]) * 5
+                    matrD_0_g = np.array([[-6., 0.01], [0.02, -2.76]]) * 5
                     matrD_g = np.array([[5., 0.99], [0.2, 2.54]]) * 5
                 
                     local_queueing_system.set_BMAP_queries_stream(matrD_0_g, matrD_g,
@@ -726,6 +726,9 @@ def experiment_10(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_10_result_list))
         except Exception:
             traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_10_except' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_10_result_list))
     else:
         file_name = 'experiment_10_' + queueing_system.name + '.qsr'
         with open('../experiment_results/' + file_name, mode='r') as res_file:
