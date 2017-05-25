@@ -175,6 +175,7 @@ class ColdReserveQueueingSystem:
 
         return matrQ_0
 
+    # Checked 25.05.17
     def _calc_Q_1(self):
         block00 = kronsum(kronsum(self.queries_stream.transition_matrices[0],
                                   self.break_stream.transition_matrices[0]),
@@ -196,27 +197,27 @@ class ColdReserveQueueingSystem:
                                       self.break_stream.transition_matrices[1]),
                                  np.eye(self.serv_unit2_stream.dim)),
                             self.repair_stream.repres_vect),
-                       e_col(self.switch2_1_stream.dim))
+                       e_col(self.switch2_1_stream.dim))                                    # Checked 25.05.17
         block21 = kron(kron(kron(np.eye(self.a),
                                  np.eye(self.serv_unit2_stream.dim)),
                             self.repair_stream.repres_matr_0),
-                       self.switch1_2_stream.repres_vect)
+                       self.switch1_2_stream.repres_vect)                                   # Checked 25.05.17
         block22 = kronsum(kronsum(kronsum(self.queries_stream.transition_matrices[0],
                                           self.break_stream.transition_matrices_sum),
                                   self.serv_unit2_stream.repres_matr),
-                          self.repair_stream.repres_matr)
+                          self.repair_stream.repres_matr)                                   # Checked 25.05.17
         block30 = kron(kron(kron(np.eye(self.a),
                                  self.serv_unit1_stream.repres_vect),
                             self.repair_stream.repres_matr_0),
-                       e_col(self.switch1_2_stream.dim))
+                       e_col(self.switch1_2_stream.dim))                                    # Checked 25.05.17
         block32 = kron(kron(kron(np.eye(self.a),
                                  self.serv_unit2_stream.repres_vect),
                             np.eye(self.repair_stream.dim)),
-                       self.switch1_2_stream.repres_matr_0)
+                       self.switch1_2_stream.repres_matr_0)                                 # Checked 25.05.17
         block33 = kronsum(kronsum(kronsum(self.queries_stream.transition_matrices[0],
                                           self.break_stream.transition_matrices_sum),
                                   self.repair_stream.repres_matr),
-                          self.switch1_2_stream.repres_matr)
+                          self.switch1_2_stream.repres_matr)                                # Checked 25.05.17
         block01 = np.zeros((block00.shape[0], block11.shape[1]))
         block02 = np.zeros((block00.shape[0], block12.shape[1]))
         block13 = np.zeros((block10.shape[0], block03.shape[1]))
@@ -231,6 +232,7 @@ class ColdReserveQueueingSystem:
 
         return matrQ_1
 
+    # Checked 25.05.17
     def _calc_Q_k(self):
         matrQ_k = [self._calc_Q_0(), self._calc_Q_1()]
         for k in range(2, self.n + 2):
@@ -728,7 +730,7 @@ class ColdReserveQueueingSystem:
             print('======= Repair time parameters =======', file=char_file)
             self.repair_stream.print_characteristics('T', 'tau', file=char_file)
 
-            print('==========END SYSTEM==========', '\n', file=char_file)
+            print('==========END PARAMS==========', '\n', file=char_file)
 
     def calc_characteristics(self, verbose=True):
         if verbose:
