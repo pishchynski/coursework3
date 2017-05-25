@@ -763,17 +763,26 @@ def experiment_11(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
             break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
 
-            for repair_vect_elem in (0.1, 0.5, 0.9):
+            for repair_vect_elem in range(2):
                 linux_check_cpu_temperature()
-
-                local_queueing_system.set_PH_repair_stream(np.array([[repair_vect_elem, 1 - repair_vect_elem]]),
-                                                           local_queueing_system.repair_stream.repres_matr)
+                if repair_vect_elem == 1:
+                    local_queueing_system.set_PH_repair_stream(np.array([[0.2, 0.8]]), 6*np.array([[-1., 1.5], [4., -35.]]))
 
                 filename = '../experiment_results/' + 'experiment_11_' + queueing_system.name + '.qsc'
                 local_queueing_system.print_characteristics(filename)
 
+                characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                with open(filename, mode="a") as file:
+                    for i, vect in enumerate(vect_p_l):
+                        print("P_{} = ".format(str(i)), np.sum(vect), file=file)
+
+                    for i, charact in enumerate(characteristics):
+                        print("{}. ".format(str(i)), characteristics_loc[i], ':', charact, file=file)
+                    print("============== END SYSTEM =================", file=file)
+
                 experiment_11_sublist = [local_queueing_system.repair_stream.c_var, []]
-                for break_coef in tqdm([i / 5 for i in range(1, 101)]):
+                for break_coef in tqdm([i / 50 for i in range(1, 101)]):
                     break_matrices_1 = copy.deepcopy(break_matrices)
                     break_matrices_1[0] *= break_coef
                     break_matrices_1[1] *= break_coef
@@ -781,7 +790,7 @@ def experiment_11(queueing_system: ColdReserveQueueingSystem, read_file=False):
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
                     experiment_11_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
-                                                    list(characteristics.items())[13][1]])
+                                                    characteristics[13]])
                 experiment_11_result_list.append(copy.deepcopy(experiment_11_sublist))
 
             file_name = 'experiment_11_' + local_queueing_system.name + '.qsr'
@@ -794,6 +803,9 @@ def experiment_11(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_11_result_list))
         except Exception:
             traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_11_except' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_11_result_list))
     else:
         file_name = 'experiment_11_' + queueing_system.name + '.qsr'
         with open('../experiment_results/' + file_name, mode='r') as res_file:
@@ -804,6 +816,7 @@ def experiment_11(queueing_system: ColdReserveQueueingSystem, read_file=False):
                'u_ от h',
                'h',
                'u_',
+               'c_var_r',
                'experiment_11')
 
 

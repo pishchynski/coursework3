@@ -437,7 +437,7 @@ class ColdReserveQueueingSystem:
 
     def _calc_p_l(self, matrQ_il, matrPhi_l):
         p0 = self._calc_p_0(matrQ_il, matrPhi_l)
-        print('p_0 shape', p0.shape)
+        # print('p_0 shape', p0.shape)
         vect_p_l = [p0]
         p_sums = [np.sum(p0)]
         # print('p0 = ', vect_p_l[0][0])
