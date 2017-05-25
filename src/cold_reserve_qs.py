@@ -1,4 +1,3 @@
-from collections import OrderedDict
 import sys
 sys.path.append("../")
 from src.streams import *
@@ -59,38 +58,39 @@ class ColdReserveQueueingSystem:
     def set_PH_repair_stream(self, vect, matr):
         self.repair_stream = PHStream(vect, matr)
 
+    # Checked 25.05.17
     def _calc_Qw_0(self):
         block00 = kronsum(self.queries_stream.transition_matrices[0],
-                          self.break_stream.transition_matrices[0])
+                          self.break_stream.transition_matrices[0])                         # Checked 25.05.17
         block03 = kron(kron(kron(np.eye(self.queries_stream.dim_),
                                  self.break_stream.transition_matrices[1]),
                             self.repair_stream.repres_vect),
-                       self.switch1_2_stream.repres_vect)
+                       self.switch1_2_stream.repres_vect)                                   # Checked 25.05.17
         block10 = kron(np.eye(self.a),
-                       self.switch2_1_stream.repres_matr_0)
+                       self.switch2_1_stream.repres_matr_0)                                 # Checked 25.05.17
         block11 = kronsum(kronsum(self.queries_stream.transition_matrices[0],
                                   self.break_stream.transition_matrices[0]),
-                          self.switch2_1_stream.repres_matr)
+                          self.switch2_1_stream.repres_matr)                                # Checked 25.05.17
         block12 = kron(kron(kron(np.eye(self.queries_stream.dim_),
                                  self.break_stream.transition_matrices[1]),
                             self.repair_stream.repres_vect),
-                       e_col(self.switch2_1_stream.dim))
+                       e_col(self.switch2_1_stream.dim))                                    # Checked 25.05.17
         block21 = kron(kron(np.eye(self.a),
                             self.repair_stream.repres_matr_0),
-                       self.switch2_1_stream.repres_vect)
+                       self.switch2_1_stream.repres_vect)                                   # Checked 25.05.17
         block22 = kronsum(kronsum(self.queries_stream.transition_matrices[0],
                                   self.break_stream.transition_matrices_sum),
-                          self.repair_stream.repres_matr)
+                          self.repair_stream.repres_matr)                                   # Checked 25.05.17
         block30 = kron(kron(np.eye(self.a),
                             self.repair_stream.repres_matr_0),
-                       e_col(self.switch1_2_stream.dim))
+                       e_col(self.switch1_2_stream.dim))                                    # Checked 25.05.17
         block32 = kron(kron(np.eye(self.a),
                             np.eye(self.repair_stream.dim)),
-                       self.switch1_2_stream.repres_matr_0)
+                       self.switch1_2_stream.repres_matr_0)                                 # Checked 25.05.17
         block33 = kronsum(kronsum(kronsum(self.queries_stream.transition_matrices[0],
                                           self.break_stream.transition_matrices_sum),
                                   self.repair_stream.repres_matr),
-                          self.switch1_2_stream.repres_matr)
+                          self.switch1_2_stream.repres_matr)                                # Checked 25.05.17
         block01 = np.zeros((block00.shape[0], block11.shape[1]))
         block02 = np.zeros((block00.shape[0], block12.shape[1]))
         block13 = np.zeros((block10.shape[0], block03.shape[1]))
@@ -107,24 +107,25 @@ class ColdReserveQueueingSystem:
         # print(matrQw_0.shape)
         return matrQw_0
 
+    # Checked 25.05.17
     def _calc_Qw_k(self):
         matrQw_k = [self._calc_Qw_0()]
 
         for i in range(1, self.n + 1):
             block0 = kron(kron(self.queries_stream.transition_matrices[i],
                                np.eye(self.break_stream.dim_)),
-                          self.serv_unit1_stream.repres_vect)
+                          self.serv_unit1_stream.repres_vect)                               # Checked 25.05.17
             block1 = kron(kron(kron(self.queries_stream.transition_matrices[i],
                                     np.eye(self.break_stream.dim_)),
                                self.serv_unit2_stream.repres_vect),
-                          np.eye(self.switch2_1_stream.dim))
+                          np.eye(self.switch2_1_stream.dim))                                # Checked 25.05.17
             block2 = kron(kron(kron(self.queries_stream.transition_matrices[i],
                                     np.eye(self.break_stream.dim_)),
                                self.serv_unit2_stream.repres_vect),
-                          np.eye(self.repair_stream.dim))
+                          np.eye(self.repair_stream.dim))                                   # Checked 25.05.17
             block3 = kron(kron(self.queries_stream.transition_matrices[i],
                                np.eye(self.break_stream.dim_)),
-                          np.eye(self.repair_stream.dim * self.switch1_2_stream.dim))
+                          np.eye(self.repair_stream.dim * self.switch1_2_stream.dim))       # Checked 25.05.17
             matr_temp = la.block_diag(block0, block1, block2, block3)
             matrQw_k.append(matr_temp)
 
@@ -139,35 +140,37 @@ class ColdReserveQueueingSystem:
 
         return matrQw_k
 
+    # Checked 25.05.17
     def _calc_Qv_0(self):
         block0 = kron(np.eye(self.a),
-                      self.serv_unit1_stream.repres_matr_0)
+                      self.serv_unit1_stream.repres_matr_0)                                 # Checked 25.05.17
         block1 = kron(kron(np.eye(self.a),
                            self.serv_unit2_stream.repres_matr_0),
-                      np.eye(self.switch2_1_stream.dim))
+                      np.eye(self.switch2_1_stream.dim))                                    # Checked 25.05.17
         block2 = kron(kron(np.eye(self.a),
                            self.serv_unit2_stream.repres_matr_0),
-                      np.eye(self.repair_stream.dim))
+                      np.eye(self.repair_stream.dim))                                       # Checked 25.05.17
         block3 = np.zeros((self.a * self.repair_stream.dim * self.switch1_2_stream.dim,
-                           self.a * self.repair_stream.dim * self.switch1_2_stream.dim))
+                           self.a * self.repair_stream.dim * self.switch1_2_stream.dim))    # Checked 25.05.17
         matrQv_0 = la.block_diag(block0, block1, block2, block3)
 
         return matrQv_0
 
+    # Checked 25.05.17
     def _calc_Q_0(self):
         block0 = kron(np.eye(self.a),
                       np.dot(self.serv_unit1_stream.repres_matr_0,
-                             self.serv_unit1_stream.repres_vect))
+                             self.serv_unit1_stream.repres_vect))                           # Checked 25.05.17
         block1 = kron(kron(np.eye(self.a),
                            np.dot(self.serv_unit2_stream.repres_matr_0,
                                   self.serv_unit2_stream.repres_vect)),
-                      np.eye(self.switch2_1_stream.dim))
+                      np.eye(self.switch2_1_stream.dim))                                    # Checked 25.05.17
         block2 = kron(kron(np.eye(self.a),
                            np.dot(self.serv_unit2_stream.repres_matr_0,
                                   self.serv_unit2_stream.repres_vect)),
-                      np.eye(self.repair_stream.dim))
+                      np.eye(self.repair_stream.dim))                                       # Checked 25.05.17
         block3 = np.zeros((self.a * self.repair_stream.dim * self.switch1_2_stream.dim,
-                           self.a * self.repair_stream.dim * self.switch1_2_stream.dim))
+                           self.a * self.repair_stream.dim * self.switch1_2_stream.dim))    # Checked 25.05.17
         matrQ_0 = la.block_diag(block0, block1, block2, block3)
 
         return matrQ_0
@@ -175,20 +178,20 @@ class ColdReserveQueueingSystem:
     def _calc_Q_1(self):
         block00 = kronsum(kronsum(self.queries_stream.transition_matrices[0],
                                   self.break_stream.transition_matrices[0]),
-                          self.serv_unit1_stream.repres_matr)
+                          self.serv_unit1_stream.repres_matr)                               # Checked 25.05.17
         block03 = kron(kron(kron(kron(np.eye(self.queries_stream.dim_),
                                       self.break_stream.transition_matrices[1]),
                                  e_col(self.serv_unit1_stream.dim)),
                             self.repair_stream.repres_vect),
-                       self.switch1_2_stream.repres_vect)
-        block10 = kron(kron(kron(np.eye(self.a),
-                                 e_col(self.serv_unit2_stream.dim)),
-                            self.serv_unit1_stream.repres_vect),
-                       self.switch2_1_stream.repres_matr_0)
+                       self.switch1_2_stream.repres_vect)                                   # Checked 25.05.17
+        block10 = kron(kron(np.eye(self.a),
+                            np.dot(e_col(self.serv_unit2_stream.dim),           # Fixed critical bug 25.05.17
+                                   self.serv_unit1_stream.repres_vect)),
+                       self.switch2_1_stream.repres_matr_0)                                 # Checked 25.05.17
         block11 = kronsum(kronsum(kronsum(self.queries_stream.transition_matrices[0],
                                           self.break_stream.transition_matrices[0]),
                                   self.serv_unit2_stream.repres_matr),
-                          self.switch2_1_stream.repres_matr)
+                          self.switch2_1_stream.repres_matr)                                # Checked 25.05.17
         block12 = kron(kron(kron(kron(np.eye(self.queries_stream.dim_),
                                       self.break_stream.transition_matrices[1]),
                                  np.eye(self.serv_unit2_stream.dim)),
@@ -756,8 +759,9 @@ class ColdReserveQueueingSystem:
 
         # Check ergodicity condition
         is_ergodicic, ergodicity, vect_y = self.ergodicity_check(matrQ_k)
+        system_load = self.calc_system_load(vect_y)
         if not is_ergodicic:
-            print(self.calc_system_load(vect_y), '> 1', file=sys.stderr)
+            print(system_load, '> 1', file=sys.stderr)
             raise ValueError('Ergodicity condition violation!')
         # else:
         #     print('Условие эргодичности выполняется!')
@@ -771,8 +775,6 @@ class ColdReserveQueueingSystem:
         matrPhi_l = self._calc_Phi_l(matrQ_il)
 
         vect_p_l = self._calc_p_l(matrQ_il, matrPhi_l)
-
-        system_load = self.calc_system_load(vect_y)
 
         system_capacity = self.calc_system_capacity()
 
@@ -804,42 +806,32 @@ class ColdReserveQueueingSystem:
 
         avg_service_time = avg_queries_num / self.queries_stream.avg_intensity
 
-        # characteristics = [system_load, system_capacity,
-        #                    avg_queries_num, queries_num_dispersion,
-        #                    prob_1_work_serves, prob_1_broken_2_serves,
-        #                    prob_1_broken_switch_1_2, prob_1_work_switch_2_1,
-        #                    prob_1_available, prob_1_unavail_2_avail,
-        #                    prob_1_2_unavail,
-        #                    avg_switch_1_2_num, avg_switch_2_1_num]
+        characteristics = [system_load, system_capacity,
+                           avg_queries_num, queries_num_dispersion,
+                           prob_1_work_serves, prob_1_broken_2_serves,
+                           prob_1_broken_switch_1_2, prob_1_work_switch_2_1,
+                           prob_1_available, prob_1_unavail_2_avail,
+                           prob_1_2_unavail,
+                           avg_switch_1_2_num, abs(avg_switch_2_1_num),
+                           avg_service_time, avg_switch_1_2_num + abs(avg_switch_2_1_num)]
 
-        characteristics_dict = OrderedDict([('Загруженность системы', system_load),
-                                            ('Пропускная способность системы', system_capacity),
-                                            ('Среднее число запросов в системе', avg_queries_num),
-                                            ('Дисперсия числа запросов в системе', queries_num_dispersion),
-                                            ('Вероятность того, что прибор 1 исправен и обслуживает запрос',
-                                             prob_1_work_serves),
-                                            ("""Вероятность того, что прибор 1 в неисправном состоянии, а прибор 2
-                                            обслуживает запрос""", prob_1_broken_2_serves),
-                                            ("""Вероятность того, что в системе есть запросы, прибор1 в неисправном
-                                            состоянии и идет переключение с этого прибора на прибор 2 (при этом оба
-                                            прибора не обслуживают заявки)""", prob_1_broken_switch_1_2),
-                                            ("""Вероятность того, что в системе есть запросы, прибор 1 в исправном
-                                            состоянии и идет переключение с прибора 2 на прибор 1 (при этом прибор 2
-                                            продолжает обслуживать запросы)""", prob_1_work_switch_2_1),
-                                            ("""Вероятность того, что прибор 1 доступен (средняя доля времени, в течение которого
-                                прибор 1 доступен)""", prob_1_available),
-                                            ("""Вероятность того, что прибор 1 недоступен, а прибор 2 доступен (средняя доля времени,
-                                 в течение которого прибор 2 доступен)""", prob_1_unavail_2_avail),
-                                            ("""Вероятность того, что оба прибора недоступны, т.е. идет переключение с прибора 1
-                                на прибор 2 (средняя доля времени, в течение которого оба прибора недоступны)""",
-                                             prob_1_2_unavail),
-                                            ("""Среднее число переключений с прибора 1 на прибор 2 в единицу времени""",
-                                             avg_switch_1_2_num),
-                                            ("""Среднее число переключений с прибора 2 на прибор 1 в единицу времени""",
-                                             abs(avg_switch_2_1_num)),
-                                            ('Среднее время нахождения заявки в системе', avg_service_time)])
+        # characteristics_dict = OrderedDict([('system_load', system_load),
+        #                                     ('system_capacity', system_capacity),
+        #                                     ('avg_queries_num', avg_queries_num),
+        #                                     ('queries_num_dispersion', queries_num_dispersion),
+        #                                     ('prob_1_work_serves', prob_1_work_serves),
+        #                                     ('prob_1_broken_2_serves', prob_1_broken_2_serves),
+        #                                     ('prob_1_broken_switch_1_2', prob_1_broken_switch_1_2),
+        #                                     ('prob_1_work_switch_2_1', prob_1_work_switch_2_1),
+        #                                     ('prob_1_available', prob_1_available),
+        #                                     ('prob_1_unavail_2_avail', prob_1_unavail_2_avail),
+        #                                     ('prob_1_2_unavail', prob_1_2_unavail),
+        #                                     ('avg_switch_1_2_num', avg_switch_1_2_num),
+        #                                     ('avg_switch_2_1_num', abs(avg_switch_2_1_num)),
+        #                                     ('avg_service_time', avg_service_time),
+        #                                     ('avg_switch_num', avg_switch_1_2_num + abs(avg_switch_2_1_num))])
 
-        return characteristics_dict, vect_p_l
+        return characteristics, vect_p_l
 
 # if __name__ == '__main__':
 #     system = ColdReserveQueueingSystem()
