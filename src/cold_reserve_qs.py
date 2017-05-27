@@ -105,7 +105,7 @@ class ColdReserveQueueingSystem:
                             [block20, block21, block22, block23],
                             [block30, block31, block32, block33]])
         # print(matrQw_0.shape)
-        return matrQw_0
+        return np.array(matrQw_0)
 
     # Checked 25.05.17
     def _calc_Qw_k(self):
@@ -230,7 +230,7 @@ class ColdReserveQueueingSystem:
                            [block20, block21, block22, block23],
                            [block30, block31, block32, block33]])
 
-        return matrQ_1
+        return np.array(matrQ_1)
 
     # Checked 25.05.17
     def _calc_Q_k(self):
@@ -248,6 +248,35 @@ class ColdReserveQueueingSystem:
             matrQ_k.append(matr_temp)
         return matrQ_k
 
+    def check_generator(self, matrQw_k, matrQ_k, matrQv_0):
+        # print("matrQw_k")
+        # for matr in matrQw_k:
+        #     print(matr.shape)
+
+        for i in range(matrQw_k[0].shape[0]):
+            row_sum = np.sum([np.sum(matr[i]) for matr in matrQw_k])
+            if abs(row_sum) > 10 ** (-5):
+                print("Qw_k line", str(i), "is not generator-like!", file=sys.stderr)
+                print("Sum = ", str(row_sum), file=sys.stderr)
+
+        # print("matrQ_k")
+        # for matr in matrQ_k:
+        #     print(matr.shape)
+        for i in range(matrQ_k[0].shape[0]):
+            row_sum = np.sum(np.sum([np.sum(matr[i]) for matr in matrQ_k]))
+            if abs(row_sum) > 10 ** (-5):
+                print("Q_k line", str(i), "is not generator-like!", file=sys.stderr)
+                print("Sum = ", str(row_sum), file=sys.stderr)
+
+        # print("matrQv_0")
+        # print(matrQv_0.shape)
+        for i in range(matrQv_0.shape[0]):
+            row_sum = np.sum(matrQv_0[i])
+            row_sum += np.sum(np.sum([np.sum(matr[i]) for matr in matrQ_k[1:]]))
+            if abs(row_sum) > 10 ** (-5):
+                print("Second block line", str(i), "is not generator-like!", file=sys.stderr)
+                print("Sum = ", str(row_sum), file=sys.stderr)
+
     def _calc_cal_Q(self):
         block00 = kronsum(kron(np.eye(self.queries_stream.dim_),
                                self.break_stream.transition_matrices[0]),
@@ -256,40 +285,40 @@ class ColdReserveQueueingSystem:
                                       self.break_stream.transition_matrices[1]),
                                  e_col(self.serv_unit1_stream.dim)),
                             self.repair_stream.repres_vect),
-                       self.switch1_2_stream.repres_vect)
+                       self.switch1_2_stream.repres_vect)                                   # Checked 26.05.17
         block10 = kron(kron(np.eye(self.a),
                             np.dot(e_col(self.serv_unit2_stream.dim),
                                    self.serv_unit1_stream.repres_vect)),
-                       self.switch2_1_stream.repres_matr_0)
+                       self.switch2_1_stream.repres_matr_0)                                 # Checked 26.05.17
         block11 = kronsum(kronsum(kron(np.eye(self.queries_stream.dim_),
                                        self.break_stream.transition_matrices[0]),
                                   self.serv_unit2_stream.repres_matr),
-                          self.switch2_1_stream.repres_matr)
+                          self.switch2_1_stream.repres_matr)                                # Checked 26.05.17
         block12 = kron(kron(kron(kron(np.eye(self.queries_stream.dim_),
                                       self.break_stream.transition_matrices[1]),
                                  np.eye(self.serv_unit2_stream.dim)),
                             self.repair_stream.repres_vect),
-                       e_col(self.switch2_1_stream.dim))
+                       e_col(self.switch2_1_stream.dim))                                    # Checked 26.05.17
         block21 = kron(kron(kron(np.eye(self.a),
                                  np.eye(self.serv_unit2_stream.dim)),
                             self.repair_stream.repres_matr_0),
-                       self.switch1_2_stream.repres_vect)
+                       self.switch1_2_stream.repres_vect)                                   # Checked 26.05.17
         block22 = kronsum(kronsum(kron(np.eye(self.queries_stream.dim_),
                                        self.break_stream.transition_matrices_sum),
                                   self.serv_unit2_stream.repres_matr),
-                          self.repair_stream.repres_matr)
+                          self.repair_stream.repres_matr)                                   # Checked 26.05.17
         block30 = kron(kron(kron(np.eye(self.a),
                                  self.serv_unit1_stream.repres_vect),
                             self.repair_stream.repres_matr_0),
-                       e_col(self.switch1_2_stream.dim))
+                       e_col(self.switch1_2_stream.dim))                                    # Checked 26.05.17
         block32 = kron(kron(kron(np.eye(self.a),
                                  self.serv_unit2_stream.repres_vect),
                             np.eye(self.repair_stream.dim)),
-                       self.switch1_2_stream.repres_matr_0)
+                       self.switch1_2_stream.repres_matr_0)                                 # Checked 26.05.17
         block33 = kronsum(kronsum(kron(np.eye(self.queries_stream.dim_),
                                        self.break_stream.transition_matrices_sum),
                                   self.repair_stream.repres_matr),
-                          self.switch1_2_stream.repres_matr)
+                          self.switch1_2_stream.repres_matr)                                # Checked 26.05.17
         block01 = np.zeros((block00.shape[0], block11.shape[1]))
         block02 = np.zeros((block00.shape[0], block12.shape[1]))
         block13 = np.zeros((block10.shape[0], block03.shape[1]))
@@ -303,6 +332,65 @@ class ColdReserveQueueingSystem:
                               [block30, block31, block32, block33]])
 
         return matr_cal_Q
+
+    def _calc_matr_Gamma(self):
+        block00 = kronsum(self.break_stream.transition_matrices[0],
+                          self.serv_unit1_stream.repres_matr) + kron(np.eye(self.break_stream.dim_),
+                                                                     np.dot(self.serv_unit1_stream.repres_matr_0,
+                                                                            self.serv_unit1_stream.repres_vect))
+        block03 = kron(kron(kron(self.break_stream.transition_matrices[1],
+                                 e_col(self.serv_unit1_stream.dim)),
+                            self.repair_stream.repres_vect),
+                       self.switch1_2_stream.repres_vect)
+
+        block10 = kron(kron(np.eye(self.break_stream.dim_),
+                            np.dot(e_col(self.serv_unit2_stream.dim),
+                                   self.serv_unit1_stream.repres_vect)),
+                       self.switch2_1_stream.repres_matr_0)
+        block11 = kronsum(kronsum(self.break_stream.transition_matrices[0],
+                                  self.serv_unit2_stream.repres_matr),
+                          self.switch2_1_stream.repres_matr) + kron(kron(np.eye(self.break_stream.dim_),
+                                                                         np.dot(self.serv_unit2_stream.repres_matr_0,
+                                                                                self.serv_unit2_stream.repres_vect)),
+                                                                    np.eye(self.switch2_1_stream.dim))
+        block12 = kron(kron(kron(self.break_stream.transition_matrices[1],
+                                 np.eye(self.serv_unit2_stream.dim)),
+                            self.repair_stream.repres_vect),
+                       e_col(self.switch2_1_stream.dim))
+        block21 = kron(kron(kron(np.eye(self.break_stream.dim_),
+                                 np.eye(self.serv_unit2_stream.dim)),
+                            self.repair_stream.repres_matr_0),
+                       self.switch1_2_stream.repres_vect)
+        block22 = kronsum(kronsum(self.break_stream.transition_matrices_sum,
+                                  self.serv_unit2_stream.repres_matr),
+                          self.repair_stream.repres_matr) + kron(kron(np.eye(self.break_stream.dim_),
+                                                                         np.dot(self.serv_unit2_stream.repres_matr_0,
+                                                                                self.serv_unit2_stream.repres_vect)),
+                                                                    np.eye(self.repair_stream.dim))
+        block30 = kron(kron(kron(np.eye(self.break_stream.dim_),
+                                 self.serv_unit1_stream.repres_vect),
+                            self.repair_stream.repres_matr_0),
+                       e_col(self.switch1_2_stream.dim))
+        block32 = kron(kron(kron(np.eye(self.break_stream.dim_),
+                                 self.serv_unit2_stream.repres_vect),
+                            np.eye(self.repair_stream.dim)),
+                       self.switch1_2_stream.repres_matr_0)
+        block33 = kronsum(kronsum(self.break_stream.transition_matrices_sum,
+                                  self.repair_stream.repres_matr),
+                          self.switch1_2_stream.repres_matr)
+
+        block01 = np.zeros((block00.shape[0], block11.shape[1]))
+        block02 = np.zeros((block00.shape[0], block12.shape[1]))
+        block13 = np.zeros((block10.shape[0], block03.shape[1]))
+        block20 = np.zeros((block21.shape[0], block10.shape[1]))
+        block23 = np.zeros((block21.shape[0], block03.shape[1]))
+        block31 = np.zeros((block30.shape[0], block11.shape[1]))
+
+        matr_Gamma = np.bmat([[block00, block01, block02, block03],
+                              [block10, block11, block12, block13],
+                              [block20, block21, block22, block23],
+                              [block30, block31, block32, block33]])
+        return matr_Gamma
 
     def ergodicity_check(self, matrQ_k):
         """
@@ -508,10 +596,10 @@ class ColdReserveQueueingSystem:
         block20 = np.zeros((block21.shape[0], block00.shape[1]))
         block23 = np.zeros((block21.shape[0], block03.shape[1]))
         block31 = np.zeros((block30.shape[0], block11.shape[1]))
-        matrGamma = np.bmat([[block00, block01, block02, block03],
+        matrGamma = np.array(np.bmat([[block00, block01, block02, block03],
                              [block10, block11, block12, block13],
                              [block20, block21, block22, block23],
-                             [block30, block31, block32, block33]])
+                             [block30, block31, block32, block33]]))
 
         x = system_solve(matrGamma)
 
@@ -536,7 +624,7 @@ class ColdReserveQueueingSystem:
         varrho = np.dot(pi1, self.serv_unit1_stream.repres_matr_0) + np.dot((pi2 + pi3),
                                                                             self.serv_unit2_stream.repres_matr_0)
 
-        return varrho[0]
+        return varrho[0], matrGamma
 
     def get_prod_func(self, vectors):
         """
@@ -744,7 +832,7 @@ class ColdReserveQueueingSystem:
 
             print('==========END PARAMS==========', '\n', file=char_file)
 
-    def calc_characteristics(self, verbose=True):
+    def calc_characteristics(self, verbose=False):
         if verbose:
             print('======= Input BMAP Parameters =======')
             self.queries_stream.print_characteristics('D')
@@ -771,9 +859,12 @@ class ColdReserveQueueingSystem:
         matrQ_k = self._calc_Q_k()
         matrQv_0 = self._calc_Qv_0()
 
+        self.check_generator(matrQw_k, matrQ_k, matrQv_0)
+
         # Check ergodicity condition
-        is_ergodicic, ergodicity, vect_y = self.ergodicity_check(matrQ_k)
-        system_load = self.calc_system_load(vect_y)
+        system_capacity, matrGamma = self.calc_system_capacity()
+
+        system_load = self.queries_stream.avg_intensity / system_capacity
         if system_load > 1:
             print(system_load, '> 1', file=sys.stderr)
             raise ValueError('Ergodicity condition violation!')
@@ -789,8 +880,6 @@ class ColdReserveQueueingSystem:
         matrPhi_l = self._calc_Phi_l(matrQ_il)
 
         vect_p_l = self._calc_p_l(matrQ_il, matrPhi_l)
-
-        system_capacity = self.calc_system_capacity()
 
         vect_P_1_ = self.get_prod_func(vect_p_l)
         vect_dP_1_ = self.get_prod_func_deriv(vect_p_l)
@@ -819,6 +908,16 @@ class ColdReserveQueueingSystem:
         avg_switch_2_1_num = self.calc_avg_switch_2_1_num(vect_p_l, vect_P_1_)
 
         avg_service_time = avg_queries_num / self.queries_stream.avg_intensity
+
+        if verbose:
+            print("Q~_k:")
+            for i, matr in enumerate(matrQw_k):
+                print("Q~_" + str(i), "=", matr)
+            print("Q_k:")
+            for i, matr in enumerate(matrQ_k):
+                print("Q_" + str(i), "=", matr)
+            print("Q^_0 = ", matrQv_0)
+            print("Gamma = ", matrGamma)
 
         characteristics = [system_load, system_capacity,
                            avg_queries_num, queries_num_dispersion,

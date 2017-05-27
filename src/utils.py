@@ -141,16 +141,17 @@ def matr_print(matr, file=sys.stdout):
     print('\n'.join(table), file=file)
 
 
-def linux_check_cpu_temperature():
+def linux_check_cpu_temperature(notify=True):
     try:
         sleep_flag = False
         while True:
             with open('/sys/class/thermal/thermal_zone0/temp', mode='r') as temp_file:
                 cpu_temp = float(temp_file.readline()) / 1000
             if cpu_temp >= 90.:
-                print('Your CPU is too hot to proceed!', file=stderr)
-                print('Please wait for 60 seconds to cool CPU...', file=stderr)
-                sleep_flag = True
+                if notify:
+                    print('Your CPU is too hot to proceed!', file=stderr)
+                    print('Please wait for 60 seconds to cool CPU...', file=stderr)
+                    sleep_flag = True
                 sleep(60)
             else:
                 if sleep_flag:
