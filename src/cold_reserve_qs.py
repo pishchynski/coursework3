@@ -38,6 +38,7 @@ class ColdReserveQueueingSystem:
     def set_MAP_queries_stream(self, matr0, matr1):
         self.queries_stream = MAPStream(matr0, matr1)
         self.a = self.queries_stream.dim_ * self.break_stream.dim_
+        self.n = 1
 
     def set_MAP_break_stream(self, matr0, matr1):
         self.break_stream = MAPStream(matr0, matr1)
