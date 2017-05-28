@@ -11,7 +11,7 @@ sys.path.append("../")
 from src.cold_reserve_qs import *
 
 
-def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_label, file_name='experiment_plot', file_type='png'):
+def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_label, file_name='experiment_plot', file_type='png', loc=1):
     """
     Builds experiment plots and saves them to file.
 
@@ -40,7 +40,7 @@ def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_la
         y_list = [x[1] for x in experiments[1]]
         plt.plot(x_list, y_list, next(linecycler), label=leg_label + ' = ' + str(round(exp_param, 3)))
 
-    plt.legend(loc=2)
+    plt.legend(loc=loc)
     plot_filename = '../experiment_plots/' + file_name + '.' + file_type
     fig.savefig(filename=plot_filename, dpi=400, format=file_type)
 
@@ -396,17 +396,17 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_2_3_result_list))
     else:
         file_name = 'experiment_2_1_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/serv-1/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_2_1_result_list = ast.literal_eval(res_line)
 
         file_name = 'experiment_2_2_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/serv-1/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_2_2_result_list = ast.literal_eval(res_line)
 
         file_name = 'experiment_2_3_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/serv-1/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_2_3_result_list = ast.literal_eval(res_line)
 
@@ -415,21 +415,22 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'h',
                r'$P_1^{+}$',
                '$c_{cor}$',
-               'experiment_2')
+               'experiment_2_1',
+               loc=1)
     build_plot(experiment_2_2_result_list,
                r'Зависимость $P_2$ от $h$ при различных' + '\nкоэффициентах корреляции $c_{cor}$ в потоке поломок',
                r'h',
                r'$P_2$',
                '$c_{cor}$',
-               'experiment_2_2'
-               )
+               'experiment_2_2',
+               loc=4)
     build_plot(experiment_2_3_result_list,
                r'Зависимость $P^{-}$ от $h$ при различных' + '\nкоэффициентах корреляции $c_{cor}$ в потоке поломок',
                r'h',
                r'$P^{-}$',
                '$c_{cor}$',
-               'experiment_2_3'
-               )
+               'experiment_2_3',
+               loc=4)
 
 
 def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
@@ -507,9 +508,9 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
-                    experiment_3_sublist[1].append([local_queueing_system.queries_stream.avg_intensity,
+                    experiment_3_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
                                                      characteristics[13]])
-                    output_table.append_row([characteristics[0], local_queueing_system.queries_stream.avg_intensity, characteristics[13]])
+                    output_table.append_row([characteristics[0], local_queueing_system.break_stream.avg_intensity, characteristics[13]])
 
                 with open(filename, mode="a") as file:
                     print("c_{var} = ", local_queueing_system.repair_stream.c_var, file=file)
@@ -535,7 +536,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_3_result_list))
     else:
         file_name = 'experiment_3_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/serv-2/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_3_result_list = ast.literal_eval(res_line)
 
