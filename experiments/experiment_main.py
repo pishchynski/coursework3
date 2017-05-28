@@ -41,7 +41,7 @@ def run_test_1(verbose=False):
 
 
 def run_test_2(verbose=False):
-    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_2", p_num=300)
+    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_2", p_num=3)
 
     queueing_system.set_BMAP_queries_stream(np.array([[-8.110725, 0.], [0., -0.26325]]) / 10.5,
                                             np.array([[8.0568, 0.053925], [0.146625, 0.116625]]) / 10.5,
@@ -51,8 +51,8 @@ def run_test_2(verbose=False):
     queueing_system.set_MAP_break_stream(np.array([[-6.3408, 1.87977 / (10**6)], [1.87977 / (10**6), -0.13888]]),
                                          np.array([[6.3214, 0.01939], [0.10822, 0.03066]]))
     # queueing_system.set_MAP_break_stream(np.array([[-86., 0.01], [0.02, -2.76]]) * 1.57 / 2.4,
-    #                                      np.array([[85., 0.99], [0.2, 2.54]]) * 1.57 / 2.4)
-    # queueing_system.set_MAP_break_stream(np.array([[-4.5]]), np.array([[4.5]]))
+    #                                       np.array([[85., 0.99], [0.2, 2.54]]) * 1.57 / 2.4)
+    #queueing_system.set_MAP_break_stream(np.array([[-4.5]]), np.array([[4.5]]))
     queueing_system.set_PH_serv_unit1_stream(np.array([[1., 0.]]), np.array([[-20., 20.], [0., -20.]]))
     queueing_system.set_PH_serv_unit2_stream(np.array([[1., 0.]]), np.array([[-2., 2.], [0., -2.]]))
     queueing_system.set_PH_switch1_2_stream(np.array([[0.05, 0.95]]), np.array([[-1.86075, 0.], [0., -146.9994]]))
@@ -72,12 +72,12 @@ def run_test_2(verbose=False):
 if __name__ == '__main__':
     read_file = False
 
-    # q_system = run_test(verbose=True)
+    # q_system = run_test_1(verbose=True)
     # experiment_1(q_system, read_file=read_file)
     # experiment_1_1(q_system, read_file=read_file)
 
     q_system = run_test_2(verbose=True)
-    experiment_2_1(q_system, read_file=read_file)
+    experiment_2(q_system, read_file=read_file)
     # experiment_3(q_system, read_file=read_file)
     # experiment_4(q_system, read_file=read_file)
     # experiment_5(q_system, read_file=read_file)
