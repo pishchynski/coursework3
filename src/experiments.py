@@ -430,3 +430,118 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                '$c_{cor}$',
                'experiment_2_3'
                )
+
+
+def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость \bar{v} от h при различных коэффициентах корреляции c_{cor} в потоке ремонта
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :param read_file: boolean, if True, read data for plotting from qsr file. False is default
+    :return:
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 3 launched!')
+
+    experiment_3_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+
+            for cor_coef in range(3):
+                linux_check_cpu_temperature()
+
+                # repair_vect = copy.deepcopy(local_queueing_system.repair_stream.repres_vect)
+                # repair_matr = copy.deepcopy(local_queueing_system.repair_stream.repres_matr)
+
+                break_matrices_0 = copy.deepcopy(break_matrices)
+
+                local_queueing_system.set_MAP_break_stream(break_matrices_0[0], break_matrices_0[1])
+
+                break_coefficients = [i / 16.5 for i in range(1, 34)]
+
+                if cor_coef == 1:
+                    repair_vect = np.array([[1., 0.]])
+                    repair_matr = np.array([[-1., 1.], [0., -1.]]) / 5
+
+                    local_queueing_system.set_PH_repair_stream(repair_vect, repair_matr)
+
+                    break_coefficients = [i / 15 for i in range(1, 130, 4)]
+
+                elif cor_coef == 2:
+                    repair_vect = np.array([[1.]])
+                    repair_matr = np.array([[-0.1]])
+
+                    local_queueing_system.set_PH_repair_stream(repair_vect, repair_matr)
+
+                    break_coefficients = [i / 15 for i in range(1, 130, 4)]
+
+                characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                filename = '../experiment_results/' + 'experiment_3_' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+                with open(filename, mode="a") as file:
+                    for i, vect in enumerate(vect_p_l):
+                        print("P_{} = ".format(str(i)), np.sum(vect), file=file)
+
+                    for i, charact in enumerate(characteristics):
+                        print("{}. ".format(str(i)), characteristics_loc[i], ':', charact, file=file)
+                    print("============== END SYSTEM =================\n", file=file)
+
+                experiment_3_sublist = [local_queueing_system.repair_stream.c_var, []]
+
+                output_table = BeautifulTable()
+                output_table.column_headers = ['\\rho', 'h', '\\bar{v}']
+
+                for break_coef in tqdm(break_coefficients):
+                    linux_check_cpu_temperature(notify=False)
+
+                    break_matrices_1 = [matr * break_coef for matr in break_matrices_0]
+
+                    local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_3_sublist[1].append([local_queueing_system.queries_stream.avg_intensity,
+                                                     characteristics[13]])
+                    output_table.append_row([characteristics[0], local_queueing_system.queries_stream.avg_intensity, characteristics[13]])
+
+                with open(filename, mode="a") as file:
+                    print("c_{var} = ", local_queueing_system.repair_stream.c_var, file=file)
+                    print("", file=file)
+                    print(output_table, file=file)
+                    print('\n', file=file)
+
+                experiment_3_result_list.append(copy.deepcopy(experiment_3_sublist))
+
+            file_name = 'experiment_3_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_3_result_list))
+        except ValueError as e:
+            print(str(e))
+            traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_3_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_3_result_list))
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_3_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_3_result_list))
+    else:
+        file_name = 'experiment_3_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_3_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_3_result_list,
+               r'Зависимость $\bar{v}$ от $h$ при различных' + '\nкоэффициентах вариации $c_{var}$ в потоке восстановления',
+               r'$h$',
+               r'$\bar{v}$',
+               '$c_{var}$',
+               'experiment_3')
