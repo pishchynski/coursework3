@@ -40,7 +40,7 @@ def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_la
         y_list = [x[1] for x in experiments[1]]
         plt.plot(x_list, y_list, next(linecycler), label=leg_label + ' = ' + str(round(exp_param, 3)))
 
-    plt.legend(loc=1)
+    plt.legend(loc=2)
     plot_filename = '../experiment_plots/' + file_name + '.' + file_type
     fig.savefig(filename=plot_filename, dpi=400, format=file_type)
 
@@ -143,7 +143,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_1_result_list))
     else:
         file_name = 'experiment_1_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/g-serv/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_1_result_list = ast.literal_eval(res_line)
 
@@ -152,7 +152,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$\lambda$',
                r'$\bar v$',
                '$c_{cor}$',
-               'experiment_1')
+               'experiment_1_gserv')
 
 
 def experiment_1_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
@@ -545,3 +545,110 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$\bar{v}$',
                '$c_{var}$',
                'experiment_3')
+
+def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость \bar{v} от h при различных коэффициентах корреляции c_{cor} в потоке поломок
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :param read_file: boolean, if True, read data for plotting from qsr file. False is default
+    :return:
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 4 launched!')
+
+    experiment_4_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            for cor_coef in range(3):
+                linux_check_cpu_temperature()
+
+                break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+
+                if cor_coef == 1:
+                    matrH_0 = np.array([[-6.3408, 1.87977 * (10 ** (-6))], [1.87977 * (10 ** (-6)), -0.13888]])
+                    matrH_1 = np.array([[6.3214, 0.01939], [0.10822, 0.03066]])
+
+                    local_queueing_system.set_MAP_break_stream(matrH_0, matrH_1)
+                    break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+                elif cor_coef == 2:
+                    matrH_0 = np.array([[-4.5]])
+                    matrH_1 = np.array([[4.5]])
+                    local_queueing_system.set_MAP_break_stream(matrH_0, matrH_1)
+                    break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+
+                characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                filename = '../experiment_results/' + 'experiment_4' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+                with open(filename, mode="a") as file:
+                    for i, vect in enumerate(vect_p_l):
+                        print("P_{} = ".format(str(i)), np.sum(vect), file=file)
+
+                    for i, charact in enumerate(characteristics):
+                        print("{}. ".format(str(i)), characteristics_loc[i], ':', charact, file=file)
+                    print("============== END SYSTEM =================\n", file=file)
+
+                experiment_4_sublist = [local_queueing_system.break_stream.c_cor, []]
+
+                output_table = BeautifulTable()
+                output_table.column_headers = ['\\rho', 'h', '\\bar{v}']
+
+                for queries_coef in tqdm([i / 15 for i in range(1, 37)]):
+                    linux_check_cpu_temperature(notify=False)
+
+                    break_matrices_1 = [matr * queries_coef for matr in break_matrices_0]
+
+                    local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
+
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_4_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
+                                                    characteristics[13]])
+
+                    output_table.append_row([characteristics[0],
+                                             local_queueing_system.break_stream.avg_intensity,
+                                             characteristics[13]])
+
+                with open(filename, mode="a") as file:
+                    print("c_{cor} = ", local_queueing_system.break_stream.c_cor, file=file)
+                    print("", file=file)
+                    print(output_table, file=file)
+                    print('\n', file=file)
+
+                experiment_4_result_list.append(copy.deepcopy(experiment_4_sublist))
+
+            file_name = 'experiment_4_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_4_result_list))
+
+        except ValueError as e:
+            print(str(e))
+            traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_4_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_4_result_list))
+
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_4_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_4_result_list))
+
+    else:
+        file_name = 'experiment_4_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_4_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_4_result_list,
+               r'Зависимость $\bar{v}$ от $h$ при различных' + '\nкоэффициентах корреляции $c_{cor}$ в потоке поломок',
+               r'h',
+               r'$\bar{v}$',
+               '$c_{cor}$',
+               'experiment_4')

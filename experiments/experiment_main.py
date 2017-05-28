@@ -5,7 +5,7 @@ from src.utils import characteristics_loc
 
 
 def run_test_1(verbose=False):
-    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_1", p_num=300)
+    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_1", p_num=3)
     queueing_system.set_BMAP_queries_stream(matrD_0=np.array([[-86., 0.01], [0.02, -2.76]]) / 57.2,
                                             matrD=np.array([[85., 0.99], [0.2, 2.54]]) / 57.2,
                                             n=3,
@@ -107,10 +107,11 @@ if __name__ == '__main__':
     # experiment_1(q_system, read_file=read_file)
     # experiment_1_1(q_system, read_file=read_file)
 
-    # q_system = run_test_2(verbose=True)
+    q_system = run_test_2(verbose=True)
     # experiment_2(q_system, read_file=read_file)
+    experiment_4(q_system, read_file=read_file)
 
-    q_system = run_test_3(verbose=True)
+    # q_system = run_test_3(verbose=True)
 
     # experiment_3(q_system, read_file=read_file)
     # experiment_4(q_system, read_file=read_file)
