@@ -306,7 +306,7 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
-                filename = '../experiment_results/' + 'experiment_2_1_' + queueing_system.name + '.qsc'
+                filename = '../experiment_results/' + 'experiment_2' + queueing_system.name + '.qsc'
                 local_queueing_system.print_characteristics(filename)
                 with open(filename, mode="a") as file:
                     for i, vect in enumerate(vect_p_l):
