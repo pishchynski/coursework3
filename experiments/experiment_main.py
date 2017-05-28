@@ -109,8 +109,8 @@ if __name__ == '__main__':
 
     q_system = run_test_2(verbose=True)
     # experiment_2(q_system, read_file=read_file)
-    experiment_4(q_system, read_file=read_file)
-
+    # experiment_4(q_system, read_file=read_file)
+    experiment_5(q_system, read_file=read_file)
     # q_system = run_test_3(verbose=True)
 
     # experiment_3(q_system, read_file=read_file)

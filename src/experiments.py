@@ -652,3 +652,109 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$\bar{v}$',
                '$c_{cor}$',
                'experiment_4')
+
+
+def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость \bar{v} от \lambda при различных интенсивностях h потока поломок
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :param read_file: boolean, if True, read data for plotting from qsr file. False is default
+    :return:
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 5 launched!')
+
+    experiment_5_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+            queries_matrices = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices)
+
+            for break_coef in [1/4, 1, 2.4]:
+                linux_check_cpu_temperature()
+
+                break_matrices_0 = copy.deepcopy(break_matrices)
+
+                matrH_0 = break_matrices_0[0] * break_coef
+                matrH_1 = break_matrices_0[1] * break_coef
+
+                local_queueing_system.set_MAP_break_stream(matrH_0, matrH_1)
+
+                characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                filename = '../experiment_results/' + 'experiment_5' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+                with open(filename, mode="a") as file:
+                    for i, vect in enumerate(vect_p_l):
+                        print("P_{} = ".format(str(i)), np.sum(vect), file=file)
+
+                    for i, charact in enumerate(characteristics):
+                        print("{}. ".format(str(i)), characteristics_loc[i], ':', charact, file=file)
+                    print("============== END SYSTEM =================\n", file=file)
+
+                experiment_5_sublist = [local_queueing_system.break_stream.avg_intensity, []]
+
+                output_table = BeautifulTable()
+                output_table.column_headers = ['\\rho', '\\lambda', '\\bar{v}']
+
+                queries_matrices_0 = copy.deepcopy(queries_matrices)
+
+                for queries_coef in tqdm([i / 12 for i in range(1, 25)]):
+                    linux_check_cpu_temperature(notify=False)
+
+                    queries_matrices_1 = [matr * queries_coef for matr in queries_matrices_0]
+
+                    local_queueing_system.queries_stream.set_transition_matrices(queries_matrices_1)
+
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_5_sublist[1].append([local_queueing_system.queries_stream.avg_intensity,
+                                                    characteristics[13]])
+
+                    output_table.append_row([characteristics[0],
+                                             local_queueing_system.queries_stream.avg_intensity,
+                                             characteristics[13]])
+
+                with open(filename, mode="a") as file:
+                    print("h = ", local_queueing_system.break_stream.avg_intensity, file=file)
+                    print("", file=file)
+                    print(output_table, file=file)
+                    print('\n', file=file)
+
+                experiment_5_result_list.append(copy.deepcopy(experiment_5_sublist))
+
+            file_name = 'experiment_5_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_5_result_list))
+
+        except ValueError as e:
+            print(str(e))
+            traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_5_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_5_result_list))
+
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_5_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_5_result_list))
+
+    else:
+        file_name = 'experiment_5_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_5_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_5_result_list,
+               r'Зависимость $\bar{v}$ от $\lambda$ при различных' + '\nинтенсивностях $h$ потока поломок',
+               r'\lambda',
+               r'$\bar{v}$',
+               '$h$',
+               'experiment_5')
