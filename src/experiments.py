@@ -536,7 +536,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_3_result_list))
     else:
         file_name = 'experiment_3_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/serv-2/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/serv-4/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_3_result_list = ast.literal_eval(res_line)
 
@@ -867,7 +867,8 @@ def experiment_6(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$a_1$',
                r'$\chi_{1,2}$',
                '$h$',
-               'experiment_6')
+               'experiment_6',
+               loc=2)
 
 
 def experiment_7(queueing_system: ColdReserveQueueingSystem, read_file=False):
