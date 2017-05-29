@@ -464,7 +464,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 local_queueing_system.set_MAP_break_stream(break_matrices_0[0], break_matrices_0[1])
 
-                break_coefficients = [i / 16.5 for i in range(1, 34)]
+                break_coefficients = [i / 33 for i in range(1, 67, 2)] + [2]
 
                 if cor_coef == 1:
                     repair_vect = np.array([[1., 0.]])
@@ -545,7 +545,8 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$h$',
                r'$\bar{v}$',
                '$c_{var}$',
-               'experiment_3')
+               'experiment_3',
+               loc=4)
 
 def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
     """
