@@ -11,7 +11,7 @@ sys.path.append("../")
 from src.cold_reserve_qs import *
 
 
-def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_label, file_name='experiment_plot', file_type='png', loc=1):
+def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_label, file_name='experiment_plot', file_type='png', loc=1, display_title=False):
     """
     Builds experiment plots and saves them to file.
 
@@ -20,6 +20,8 @@ def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_la
     :param x_label: str with x-axis label to be displayed on plot
     :param y_label: str with y-axis label to be displayed on plot
     :param file_type: str with file type ('eps', 'png'). Default is 'png'
+    :param loc: int with legend location (1 is right-top, then anti-clockwise) 1 by default
+    :param display_title: boolean True for displaying plot title on the top. False by default
     :return: None
     """
 
@@ -27,7 +29,8 @@ def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_la
 
     fig = plt.figure(1)
 
-    fig.suptitle(experiment_name)
+    if display_title:
+        fig.suptitle(experiment_name)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
 
@@ -143,7 +146,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_1_result_list))
     else:
         file_name = 'experiment_1_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/g-serv/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_1_result_list = ast.literal_eval(res_line)
 
@@ -396,17 +399,17 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_2_3_result_list))
     else:
         file_name = 'experiment_2_1_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/serv-1/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_2_1_result_list = ast.literal_eval(res_line)
 
         file_name = 'experiment_2_2_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/serv-1/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_2_2_result_list = ast.literal_eval(res_line)
 
         file_name = 'experiment_2_3_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/serv-1/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_2_3_result_list = ast.literal_eval(res_line)
 
@@ -536,7 +539,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_3_result_list))
     else:
         file_name = 'experiment_3_' + queueing_system.name + '.qsr'
-        with open('../experiment_results/serv-4/' + file_name, mode='r') as res_file:
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_3_result_list = ast.literal_eval(res_line)
 
@@ -653,7 +656,8 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'h',
                r'$\bar{v}$',
                '$c_{cor}$',
-               'experiment_4')
+               'experiment_4',
+               loc=4)
 
 
 def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
@@ -756,10 +760,12 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
     build_plot(experiment_5_result_list,
                r'Зависимость $\bar{v}$ от $\lambda$ при различных' + '\nинтенсивностях $h$ потока поломок',
-               r'\lambda',
+               r'$\lambda$',
                r'$\bar{v}$',
                '$h$',
-               'experiment_5')
+               'experiment_5',
+               loc=2,
+               display_title=True)
 
 def experiment_6(queueing_system: ColdReserveQueueingSystem, read_file=False):
     """
@@ -977,4 +983,5 @@ def experiment_7(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$a_2$',
                r'$\chi_{2,1}$',
                '$h$',
-               'experiment_7')
+               'experiment_7',
+               loc=4)
