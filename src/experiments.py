@@ -759,3 +759,220 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$\bar{v}$',
                '$h$',
                'experiment_5')
+
+def experiment_6(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость \chi_{1,2} от среднего времени переключения с прибора-1 на прибор-2 a_1 при различных интенсивностях h потока поломок
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :param read_file: boolean, if True, read data for plotting from qsr file. False is default
+    :return:
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 6 launched!')
+
+    experiment_6_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+            switch1_2_matr = copy.deepcopy(local_queueing_system.switch1_2_stream.repres_matr)
+            switch1_2_vect = copy.deepcopy(local_queueing_system.switch1_2_stream.repres_vect)
+
+            for iter, break_coef in enumerate([1/4, 1, 2.4]):
+                linux_check_cpu_temperature()
+
+                break_matrices_0 = copy.deepcopy(break_matrices)
+
+                matrH_0 = break_matrices_0[0] * break_coef
+                matrH_1 = break_matrices_0[1] * break_coef
+
+                local_queueing_system.set_MAP_break_stream(matrH_0, matrH_1)
+
+                characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                filename = '../experiment_results/' + 'experiment_6' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+                with open(filename, mode="a") as file:
+                    for i, vect in enumerate(vect_p_l):
+                        print("P_{} = ".format(str(i)), np.sum(vect), file=file)
+
+                    for i, charact in enumerate(characteristics):
+                        print("{}. ".format(str(i)), characteristics_loc[i], ':', charact, file=file)
+                    print("============== END SYSTEM =================\n", file=file)
+
+                experiment_6_sublist = [local_queueing_system.break_stream.avg_intensity, []]
+
+                output_table = BeautifulTable()
+                output_table.column_headers = ['\\rho', 'a_1', '\\chi_{1,2}']
+
+                switch1_2_matr_0 = copy.deepcopy(switch1_2_matr)
+
+                s = 1.13547
+
+                for queries_coef in tqdm([0.000013 * (s ** i) for i in range(0, 50)]):
+                    linux_check_cpu_temperature(notify=False)
+
+                    switch1_2_matr_1 = switch1_2_matr_0 * queries_coef
+
+                    local_queueing_system.set_PH_switch1_2_stream(switch1_2_vect, switch1_2_matr_1)
+
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_6_sublist[1].append([1 / local_queueing_system.switch1_2_stream.avg_intensity,
+                                                    characteristics[11]])
+
+                    output_table.append_row([characteristics[0],
+                                             1 / local_queueing_system.switch1_2_stream.avg_intensity,
+                                             characteristics[11]])
+
+                with open(filename, mode="a") as file:
+                    print("h = ", local_queueing_system.break_stream.avg_intensity, file=file)
+                    print("", file=file)
+                    print(output_table, file=file)
+                    print('\n', file=file)
+
+                experiment_6_result_list.append(copy.deepcopy(experiment_6_sublist))
+
+            file_name = 'experiment_6_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_6_result_list))
+
+        except ValueError as e:
+            print(str(e))
+            traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_6_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_6_result_list))
+
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_6_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_6_result_list))
+
+    else:
+        file_name = 'experiment_6_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_6_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_6_result_list,
+               r'Зависимость $\chi_{1,2}$ от $a_1$ при различных' + '\nинтенсивностях $h$ потока поломок',
+               r'$a_1$',
+               r'$\chi_{1,2}$',
+               '$h$',
+               'experiment_6')
+
+
+def experiment_7(queueing_system: ColdReserveQueueingSystem, read_file=False):
+    """
+    Зависимость \chi_{2,1} от среднего времени переключения с прибора-1 на прибор-2 a_2 при различных интенсивностях h потока поломок
+
+    :param queueing_system: ColdReserveQueueingSystem
+    :param read_file: boolean, if True, read data for plotting from qsr file. False is default
+    :return:
+    """
+
+    linux_check_cpu_temperature()
+
+    print('Experiment 7 launched!')
+
+    experiment_7_result_list = []
+
+    if not read_file:
+        try:
+            local_queueing_system = copy.deepcopy(queueing_system)
+
+            break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
+            switch2_1_matr = copy.deepcopy(local_queueing_system.switch2_1_stream.repres_matr)
+            switch2_1_vect = copy.deepcopy(local_queueing_system.switch2_1_stream.repres_vect)
+
+            for iter, break_coef in enumerate([1/4, 1, 2.4]):
+                linux_check_cpu_temperature()
+
+                break_matrices_0 = copy.deepcopy(break_matrices)
+
+                matrH_0 = break_matrices_0[0] * break_coef
+                matrH_1 = break_matrices_0[1] * break_coef
+
+                local_queueing_system.set_MAP_break_stream(matrH_0, matrH_1)
+
+                characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                filename = '../experiment_results/' + 'experiment_7' + queueing_system.name + '.qsc'
+                local_queueing_system.print_characteristics(filename)
+                with open(filename, mode="a") as file:
+                    for i, vect in enumerate(vect_p_l):
+                        print("P_{} = ".format(str(i)), np.sum(vect), file=file)
+
+                    for i, charact in enumerate(characteristics):
+                        print("{}. ".format(str(i)), characteristics_loc[i], ':', charact, file=file)
+                    print("============== END SYSTEM =================\n", file=file)
+
+                experiment_7_sublist = [local_queueing_system.break_stream.avg_intensity, []]
+
+                output_table = BeautifulTable()
+                output_table.column_headers = ['\\rho', 'a_2', '\\chi_{2,1}']
+
+                switch2_1_matr_0 = copy.deepcopy(switch2_1_matr)
+
+                s = 1.13547
+
+                for queries_coef in tqdm([0.0000013 * (s ** i) for i in range(0, 50)]):
+                    linux_check_cpu_temperature(notify=False)
+
+                    switch2_1_matr_1 = switch2_1_matr_0 * queries_coef
+
+                    local_queueing_system.set_PH_switch2_1_stream(switch2_1_vect, switch2_1_matr_1)
+
+                    characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    experiment_7_sublist[1].append([1 / local_queueing_system.switch2_1_stream.avg_intensity,
+                                                    characteristics[12]])
+
+                    output_table.append_row([characteristics[0],
+                                             1 / local_queueing_system.switch2_1_stream.avg_intensity,
+                                             characteristics[12]])
+
+                with open(filename, mode="a") as file:
+                    print("h = ", local_queueing_system.break_stream.avg_intensity, file=file)
+                    print("", file=file)
+                    print(output_table, file=file)
+                    print('\n', file=file)
+
+                experiment_7_result_list.append(copy.deepcopy(experiment_7_sublist))
+
+            file_name = 'experiment_7_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_7_result_list))
+
+        except ValueError as e:
+            print(str(e))
+            traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_7_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_7_result_list))
+
+        except Exception:
+            traceback.print_exc(file=sys.stderr)
+            file_name = 'experiment_7_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_7_result_list))
+
+    else:
+        file_name = 'experiment_7_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_7_result_list = ast.literal_eval(res_line)
+
+    build_plot(experiment_7_result_list,
+               r'Зависимость $\chi_{2,1}$ от $a_2$ при различных' + '\nинтенсивностях $h$ потока поломок',
+               r'$a_2$',
+               r'$\chi_{2,1}$',
+               '$h$',
+               'experiment_7')
