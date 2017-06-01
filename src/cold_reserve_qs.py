@@ -1,4 +1,7 @@
 import sys
+
+import gc
+
 sys.path.append("../")
 from src.streams import *
 
@@ -422,7 +425,7 @@ class ColdReserveQueueingSystem:
         :param matrG_prev: np.array with matrix G calculated on previous iteration
         :return: np.array with matrix G after iteration
         """
-        temp_sum = np.array(copy.deepcopy(matrQ_k[0]))
+        temp_sum = np.array(matrQ_k[0])
         for k in range(2, self.n + 2):
             temp_sum += np.dot(matrQ_k[k], np.linalg.matrix_power(matrG_prev, k))
         matrG_new = np.dot(matrQ_1_neg_inv, temp_sum)
@@ -448,7 +451,7 @@ class ColdReserveQueueingSystem:
         return matrG
 
     def _calc_G_0(self, matrG, matrQ_k, matrQv_0):
-        temp_sum = np.array(copy.deepcopy(matrQ_k[1]))
+        temp_sum = np.array(matrQ_k[1])
         for k in range(2, self.n + 2):
             temp_sum += np.dot(matrQ_k[k], np.linalg.matrix_power(matrG, k - 1))
         matrG_0 = la.inv(temp_sum)
@@ -457,14 +460,16 @@ class ColdReserveQueueingSystem:
 
     def _calc_Q_il(self, matrQw_k, matrQ_k, matrG, matrG_0):
         matrQ_il = []
+        zero_matr_Q_k = np.zeros(matrQ_k[0].shape)
+        zero_matr_Qw_k = np.zeros(matrQw_k[1].shape)
         for i in range(0, self._p_num):
             matrQ_il.append([])
             if i == 0:
                 for l in range(0, self.n + 1):
                     # здесь до n, т.к. нет больше матриц Q_k
-                    temp_matr = np.array(copy.deepcopy(matrQw_k[l]))
+                    temp_matr = np.array(matrQw_k[l])
                     for k in range(l + 1, self.n + 1):
-                        mult_matr = np.array(copy.deepcopy(matrQw_k[k]))
+                        mult_matr = np.array(matrQw_k[k])
                         for kk in range(k - 1, l - 1, -1):
                             if kk == 0:
                                 mult_matr = np.dot(mult_matr, matrG_0)
@@ -474,25 +479,25 @@ class ColdReserveQueueingSystem:
                         temp_matr += mult_matr
                     matrQ_il[i].append(temp_matr)
                 for l in range(self.n + 1, self._p_num):
-                    matrQ_il[i].append(np.zeros(matrQw_k[1].shape))
+                    matrQ_il[i].append(zero_matr_Qw_k)
             else:
                 for l in range(0, self._p_num):
                     if l >= i and (l - i) <= (self.n + 1):
                         if (l - i + 1) <= (self.n + 1):
-                            temp_matr = np.array(copy.deepcopy(matrQ_k[l - i + 1]))
+                            temp_matr = np.array(matrQ_k[l - i + 1])
                         else:
                             temp_matr = np.zeros(matrQ_k[0].shape)
 
                         for k in range(l + 1, self._p_num):  # sum from l+1 to inf
                             if (k - i + 1) <= (self.n + 1):
-                                mult_matr = np.array(copy.deepcopy(matrQ_k[k - i + 1]))
+                                mult_matr = np.array(matrQ_k[k - i + 1])
                                 for kk in range(l, k):
                                     mult_matr = np.dot(mult_matr, matrG)
 
                                 temp_matr += mult_matr
                         matrQ_il[i].append(temp_matr)
                     else:
-                        matrQ_il[i].append(np.zeros(matrQ_k[0].shape))
+                        matrQ_il[i].append(zero_matr_Q_k)
         return matrQ_il
 
     def _calc_Phi_l(self, matrQ_il):
@@ -500,15 +505,19 @@ class ColdReserveQueueingSystem:
         matrPhi_l = [matrPhi_0]
         for l in range(1, self._p_num):
             temp_matr = np.dot(np.dot(matrPhi_l[0], matrQ_il[0][l]), la.inv(-matrQ_il[l][l]))
-            for i in range(1, l):
+
+            for i in range(l - self.n, l):
+                if i < 1:
+                    continue
                 # print(matrPhi_l[i].dot(matrQ_il[i][l]).dot(la.inv(-matrQ_il[l][l])).shape)
                 temp_matr += np.dot(np.dot(matrPhi_l[i], matrQ_il[i][l]), la.inv(-matrQ_il[l][l]))
+
             matrPhi_l.append(temp_matr)
         return matrPhi_l
 
     def _calc_p_0(self, matrQ_il, matrPhi_l):
         # Вычисление p_0
-        matr_a = np.array(- copy.deepcopy(matrQ_il[0][0]))
+        matr_a = np.array(-matrQ_il[0][0])
         vect_eaR = e_col(matrPhi_l[0].shape[1])
         for i in range(1, self._p_num):
             vect_e = e_col(matrPhi_l[i].shape[1])
@@ -658,8 +667,7 @@ class ColdReserveQueueingSystem:
         :param level: derivative level. 0 is default
         :return: prod func in z=0 of level given
         """
-
-
+        pass
 
     def calc_avg_queries_num(self, vect_dP_1_):
         L = r_multiply_e(vect_dP_1_)[0, 0]
@@ -865,6 +873,16 @@ class ColdReserveQueueingSystem:
         # Check ergodicity condition
         system_capacity, matrGamma = self.calc_system_capacity()
 
+        if verbose:
+            print("Q~_k:")
+            for i, matr in enumerate(matrQw_k):
+                print("Q~_" + str(i), "=", matr)
+            print("Q_k:")
+            for i, matr in enumerate(matrQ_k):
+                print("Q_" + str(i), "=", matr)
+            print("Q^_0 = ", matrQv_0)
+            print("Gamma = ", matrGamma)
+
         system_load = self.queries_stream.avg_intensity / system_capacity
         if system_load > 1:
             print(system_load, '> 1', file=sys.stderr)
@@ -878,9 +896,22 @@ class ColdReserveQueueingSystem:
 
         matrQ_il = self._calc_Q_il(matrQw_k, matrQ_k, matrG, matrG_0)
 
+        del matrQ_k
+        del matrQw_k
+        del matrQv_0
+        del matrG
+        del matrG_0
+        
+        gc.collect()
+
         matrPhi_l = self._calc_Phi_l(matrQ_il)
 
         vect_p_l = self._calc_p_l(matrQ_il, matrPhi_l)
+
+        del matrQ_il
+        del matrPhi_l
+        
+        gc.collect()
 
         vect_P_1_ = self.get_prod_func(vect_p_l)
         vect_dP_1_ = self.get_prod_func_deriv(vect_p_l)
@@ -909,16 +940,6 @@ class ColdReserveQueueingSystem:
         avg_switch_2_1_num = self.calc_avg_switch_2_1_num(vect_p_l, vect_P_1_)
 
         avg_service_time = avg_queries_num / self.queries_stream.avg_intensity
-
-        if verbose:
-            print("Q~_k:")
-            for i, matr in enumerate(matrQw_k):
-                print("Q~_" + str(i), "=", matr)
-            print("Q_k:")
-            for i, matr in enumerate(matrQ_k):
-                print("Q_" + str(i), "=", matr)
-            print("Q^_0 = ", matrQv_0)
-            print("Gamma = ", matrGamma)
 
         characteristics = [system_load, system_capacity,
                            avg_queries_num, queries_num_dispersion,

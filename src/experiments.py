@@ -45,7 +45,7 @@ def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_la
 
     plt.legend(loc=loc)
     plot_filename = '../experiment_plots/' + file_name + '.' + file_type
-    fig.savefig(filename=plot_filename, dpi=400, format=file_type)
+    fig.savefig(filename=plot_filename, dpi=400, format=file_type, bbox_inches='tight')
 
 
 def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
@@ -106,7 +106,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 output_table = BeautifulTable()
                 output_table.column_headers = ['\\rho', '\\lambda', '\\bar{v}']
 
-                for queries_coef in tqdm([i / 12 for i in range(1, 25)]):
+                for queries_coef in tqdm([i / 25 for i in range(1, 51)]):
                     linux_check_cpu_temperature(notify=False)
 
                     queries_matrices_1 = [matr * queries_coef for matr in queries_matrices_0]
@@ -765,7 +765,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
                '$h$',
                'experiment_5',
                loc=2,
-               display_title=True)
+               display_title=False)
 
 def experiment_6(queueing_system: ColdReserveQueueingSystem, read_file=False):
     """
