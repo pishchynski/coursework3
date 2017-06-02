@@ -691,6 +691,8 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
             for break_coef in [1/4, 1, 2.4]:
                 linux_check_cpu_temperature()
 
+                local_queueing_system.queries_stream.set_transition_matrices(queries_matrices)
+
                 break_matrices_0 = copy.deepcopy(break_matrices)
 
                 matrH_0 = break_matrices_0[0] * break_coef
@@ -717,7 +719,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 queries_matrices_0 = copy.deepcopy(queries_matrices)
 
-                ergo = characteristics[1]
+                max_load = characteristics[1]
 
                 i = 1
                 while True:
@@ -730,7 +732,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     local_queueing_system.queries_stream.set_transition_matrices(queries_matrices_1)
 
-                    if local_queueing_system.queries_stream.avg_intensity >= ergo:
+                    if local_queueing_system.queries_stream.avg_intensity >= max_load:
                         break
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
