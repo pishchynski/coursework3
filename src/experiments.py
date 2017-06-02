@@ -725,7 +725,8 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 while True:
                     linux_check_cpu_temperature(notify=False)
                     if i % 10 == 0:
-                        print('Status: ', str(i), 'iterations passed.')
+                        sys.stdout.write('\rStatus: {} iterations passed.'.format(str(i)))
+                        sys.stdout.flush()
 
                     queries_coef = i / 50
                     queries_matrices_1 = [matr * queries_coef for matr in queries_matrices_0]
