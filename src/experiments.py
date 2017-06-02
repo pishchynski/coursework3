@@ -3,6 +3,9 @@ import sys
 import traceback
 from itertools import cycle
 
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 from beautifultable import BeautifulTable
 from tqdm import tqdm
