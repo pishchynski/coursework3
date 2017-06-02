@@ -721,6 +721,8 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 max_load = characteristics[1]
 
+                print('Breakdowns intensity:', str(local_queueing_system.break_stream.avg_intensity))
+
                 i = 1
                 while True:
                     linux_check_cpu_temperature(notify=False)
