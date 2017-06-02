@@ -717,12 +717,19 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 queries_matrices_0 = copy.deepcopy(queries_matrices)
 
-                for queries_coef in tqdm([i / 30 for i in range(1, 61)]):
+                ergo = characteristics[1]
+
+                i = 1
+                while True:
                     linux_check_cpu_temperature(notify=False)
 
+                    queries_coef = i / 50
                     queries_matrices_1 = [matr * queries_coef for matr in queries_matrices_0]
 
                     local_queueing_system.queries_stream.set_transition_matrices(queries_matrices_1)
+
+                    if local_queueing_system.queries_stream.avg_intensity >= ergo:
+                        break
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
@@ -732,6 +739,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
                     output_table.append_row([characteristics[0],
                                              local_queueing_system.queries_stream.avg_intensity,
                                              characteristics[13]])
+                    i += 1
 
                 with open(filename, mode="a") as file:
                     print("h = ", local_queueing_system.break_stream.avg_intensity, file=file)
