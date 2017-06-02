@@ -5,7 +5,7 @@ from src.utils import characteristics_loc
 
 
 def run_test_1(verbose=False):
-    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_1", p_num=700)
+    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_1", p_max_num=700)
     queueing_system.set_BMAP_queries_stream(matrD_0=np.array([[-86., 0.01], [0.02, -2.76]]) / 57.2,
                                             matrD=np.array([[85., 0.99], [0.2, 2.54]]) / 57.2,
                                             n=3,
@@ -41,7 +41,7 @@ def run_test_1(verbose=False):
 
 
 def run_test_2(verbose=False):
-    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_2", p_num=10000)
+    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_2", p_max_num=10000)
 
     queueing_system.set_BMAP_queries_stream(np.array([[-8.110725, 0.], [0., -0.26325]]) / 21,
                                             np.array([[8.0568, 0.053925], [0.146625, 0.116625]]) / 21,
@@ -70,7 +70,7 @@ def run_test_2(verbose=False):
 
 
 def run_test_3(verbose=False):
-    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_3", p_num=10000)
+    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_3", p_max_num=10000)
 
     queueing_system.set_BMAP_queries_stream(matrD_0=np.array([[-86., 0.01], [0.02, -2.76]]) / 30.7,
                                             matrD=np.array([[85., 0.99], [0.2, 2.54]]) / 30.7,

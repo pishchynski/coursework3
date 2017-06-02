@@ -16,9 +16,10 @@ class ColdReserveQueueingSystem:
     Default values are for stationary Poisson case.
     """
 
-    def __init__(self, name='Default system', p_num=100):
+    def __init__(self, name='Default system', p_max_num=100):
         self.name = name
-        self._p_num = p_num
+        self._p_max_num = p_max_num
+        self._p_num = 100
         self._eps_G = 10 ** (-8)
         self._eps_Phi = 10 ** (-8)
         self._eps_p_i = 10 ** (-8)
@@ -487,8 +488,6 @@ class ColdReserveQueueingSystem:
                         # print("mult matr 0 shape : ", mult_matr.shape)
                         temp_matr += mult_matr
                     matrQ_il[i].append(temp_matr)
-                for l in range(self.n + 1, self._p_num):
-                    matrQ_il[i].append(zero_matr_Qw_k)
             else:
                 for l in range(0, self.n + 2):
                     # To n+1 because of matrices Q_k quantity
@@ -529,6 +528,8 @@ class ColdReserveQueueingSystem:
 
         while la.norm(temp_matr, ord=np.inf) > self._eps_Phi:
             # print('l = ', str(l))
+            if l >= self._p_max_num:
+                break
             temp_matr = copy.copy(zero_matrQw_k)
             if l <= self.n:
                 temp_matr = np.dot(np.dot(matrPhi_l[0],
