@@ -275,7 +275,7 @@ def experiment_1_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
 def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
     """
-    Зависимость P_1^{+} от h при различных коэффициентах корреляции c_{cor} в потоке поломок
+    Зависимость P_1^{+}, P_2, P^{-} от h при различных коэффициентах корреляции c_{cor} в потоке поломок
 
     :param queueing_system: ColdReserveQueueingSystem
     :param read_file: boolean, if True, read data for plotting from qsr file. False is default
@@ -331,7 +331,7 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 output_table = BeautifulTable()
                 output_table.column_headers = ['\\rho', 'h', 'P_1^{+}', 'P_2', 'P^{-}']
 
-                for queries_coef in tqdm([i / 15 for i in range(1, 37)]):
+                for queries_coef in tqdm([i / 15 for i in range(1, 61)]):
                     linux_check_cpu_temperature(notify=False)
 
                     break_matrices_1 = [matr * queries_coef for matr in break_matrices_0]
@@ -472,7 +472,8 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 local_queueing_system.set_MAP_break_stream(break_matrices_0[0], break_matrices_0[1])
 
-                break_coefficients = [i / 33 for i in range(1, 67, 2)] + [2]
+                # break_coefficients = [i / 33 for i in range(1, 67, 2)] + [2]
+                break_coefficients = [i / 15 for i in range(1, 130, 4)]
 
                 if cor_coef == 1:
                     repair_vect = np.array([[1., 0.]])
@@ -609,7 +610,7 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 output_table = BeautifulTable()
                 output_table.column_headers = ['\\rho', 'h', '\\bar{v}']
 
-                for queries_coef in tqdm([i / 15 for i in range(1, 37)]):
+                for queries_coef in tqdm([i / 15 for i in range(1, 61)]):
                     linux_check_cpu_temperature(notify=False)
 
                     break_matrices_1 = [matr * queries_coef for matr in break_matrices_0]
@@ -716,7 +717,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 queries_matrices_0 = copy.deepcopy(queries_matrices)
 
-                for queries_coef in tqdm([i / 12 for i in range(1, 25)]):
+                for queries_coef in tqdm([i / 15 for i in range(1, 61)]):
                     linux_check_cpu_temperature(notify=False)
 
                     queries_matrices_1 = [matr * queries_coef for matr in queries_matrices_0]

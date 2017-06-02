@@ -72,8 +72,8 @@ def run_test_2(verbose=False):
 def run_test_3(verbose=False):
     queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_3", p_max_num=10000)
 
-    queueing_system.set_BMAP_queries_stream(matrD_0=np.array([[-86., 0.01], [0.02, -2.76]]) / 30.7,
-                                            matrD=np.array([[85., 0.99], [0.2, 2.54]]) / 30.7,
+    queueing_system.set_BMAP_queries_stream(matrD_0=np.array([[-86., 0.01], [0.02, -2.76]]) / 40,
+                                            matrD=np.array([[85., 0.99], [0.2, 2.54]]) / 40,
                                             n=3,
                                             q=0.8)
 
