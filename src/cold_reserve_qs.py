@@ -1,6 +1,5 @@
-import sys
-
 import gc
+import sys
 
 sys.path.append("../")
 from src.streams import *
@@ -20,9 +19,9 @@ class ColdReserveQueueingSystem:
     def __init__(self, name='Default system', p_num=100):
         self.name = name
         self._p_num = p_num
-        self._eps_G = 10 ** (-6)
-        self._eps_Phi = 10 ** (-6)
-        self._eps_p_i = 10 ** (-6)
+        self._eps_G = 10 ** (-8)
+        self._eps_Phi = 10 ** (-8)
+        self._eps_p_i = 10 ** (-8)
         self.queries_stream = MAPStream([[-19]], [[19]])
         self.break_stream = MAPStream([[-0.00001]], [[0.00001]])
         self.serv_unit1_stream = PHStream([[1]], [[-20]])
@@ -459,14 +458,24 @@ class ColdReserveQueueingSystem:
         return matrG_0
 
     def _calc_Q_il(self, matrQw_k, matrQ_k, matrG, matrG_0):
+        """
+        Calculates light np.array of Q_il containing only Q_{0, l} and Q_{1, l}
+
+        :param matrQw_k: np.array
+        :param matrQ_k: np.array
+        :param matrG: np.array
+        :param matrG_0: np.array
+        :return: np.array
+        """
+
         matrQ_il = []
         zero_matr_Q_k = np.zeros(matrQ_k[0].shape)
         zero_matr_Qw_k = np.zeros(matrQw_k[1].shape)
-        for i in range(0, self._p_num):
+        for i in range(0, 2):
             matrQ_il.append([])
             if i == 0:
                 for l in range(0, self.n + 1):
-                    # здесь до n, т.к. нет больше матриц Q_k
+                    # To n because of matrices Qw_k quantity
                     temp_matr = np.array(matrQw_k[l])
                     for k in range(l + 1, self.n + 1):
                         mult_matr = np.array(matrQw_k[k])
@@ -481,16 +490,14 @@ class ColdReserveQueueingSystem:
                 for l in range(self.n + 1, self._p_num):
                     matrQ_il[i].append(zero_matr_Qw_k)
             else:
-                for l in range(0, self._p_num):
-                    if l >= i and (l - i) <= (self.n + 1):
-                        if (l - i + 1) <= (self.n + 1):
-                            temp_matr = np.array(matrQ_k[l - i + 1])
-                        else:
-                            temp_matr = np.zeros(matrQ_k[0].shape)
+                for l in range(0, self.n + 2):
+                    # To n+1 because of matrices Q_k quantity
+                    if l != 0:
+                        temp_matr = np.array(matrQ_k[l - i + 1])
 
-                        for k in range(l + 1, self._p_num):  # sum from l+1 to inf
-                            if (k - i + 1) <= (self.n + 1):
-                                mult_matr = np.array(matrQ_k[k - i + 1])
+                        for k in range(l + 1, self.n + 2):  # sum from l+1 to n+1 because of matrices Q_k existence
+                            if k <= (self.n + 1):
+                                mult_matr = np.array(matrQ_k[k])
                                 for kk in range(l, k):
                                     mult_matr = np.dot(mult_matr, matrG)
 
@@ -500,24 +507,52 @@ class ColdReserveQueueingSystem:
                         matrQ_il[i].append(zero_matr_Q_k)
         return matrQ_il
 
+    def get_matrQ_il(self, matrQ_il, i, l):
+        zero_matrQw_0 = np.zeros(matrQ_il[0][0].shape)   # matrQ_il[0, 0] is in right shape
+        zero_matrQ_k = matrQ_il[1][0]                  # matrQ_il[1, 0] is zero matrix
+        if i == 0:
+            return matrQ_il[i][l] if l <= self.n else zero_matrQw_0
+        else:
+            light_l = l - i + 1
+            light_i = 1
+            return matrQ_il[light_i][light_l] if light_l <= self.n + 1 else zero_matrQ_k
+
     def _calc_Phi_l(self, matrQ_il):
         matrPhi_0 = np.eye(matrQ_il[0][0].shape[0])
         matrPhi_l = [matrPhi_0]
-        for l in range(1, self._p_num):
-            temp_matr = np.dot(np.dot(matrPhi_l[0], matrQ_il[0][l]), la.inv(-matrQ_il[l][l]))
+        temp_matr = matrPhi_0
+
+        zero_matrQ_k = matrQ_il[1][0]
+        zero_matrQw_k = np.zeros(matrQ_il[0][1].shape)
+        # print("zero shape", zero_matrQw_k.shape)
+        l = 1
+
+        while la.norm(temp_matr, ord=np.inf) > self._eps_Phi:
+            # print('l = ', str(l))
+            temp_matr = copy.copy(zero_matrQw_k)
+            if l <= self.n:
+                temp_matr = np.dot(np.dot(matrPhi_l[0],
+                                          self.get_matrQ_il(matrQ_il, 0, l)),
+                                   la.inv(-self.get_matrQ_il(matrQ_il, l, l)))
 
             for i in range(l - self.n, l):
                 if i < 1:
                     continue
                 # print(matrPhi_l[i].dot(matrQ_il[i][l]).dot(la.inv(-matrQ_il[l][l])).shape)
-                temp_matr += np.dot(np.dot(matrPhi_l[i], matrQ_il[i][l]), la.inv(-matrQ_il[l][l]))
+                # print('i = ', str(i))
+
+                temp_matr += np.dot(np.dot(matrPhi_l[i],
+                                           self.get_matrQ_il(matrQ_il, i, l)),
+                                    la.inv(-self.get_matrQ_il(matrQ_il, l, l)))
 
             matrPhi_l.append(temp_matr)
+            l += 1
+        self._p_num = l
         return matrPhi_l
 
     def _calc_p_0(self, matrQ_il, matrPhi_l):
         # Вычисление p_0
-        matr_a = np.array(-matrQ_il[0][0])
+        matr_a = np.array(-self.get_matrQ_il(matrQ_il, 0, 0))
         vect_eaR = e_col(matrPhi_l[0].shape[1])
         for i in range(1, self._p_num):
             vect_e = e_col(matrPhi_l[i].shape[1])

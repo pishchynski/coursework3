@@ -10,6 +10,8 @@ from tqdm import tqdm
 sys.path.append("../")
 from src.cold_reserve_qs import *
 
+# from matplotlib import rcParams
+# rcParams.update({'figure.autolayout': True})
 
 def build_plot(experiment_result_list, experiment_name, x_label, y_label, leg_label, file_name='experiment_plot', file_type='png', loc=1, display_title=False):
     """
