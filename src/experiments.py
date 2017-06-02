@@ -717,7 +717,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 queries_matrices_0 = copy.deepcopy(queries_matrices)
 
-                for queries_coef in tqdm([i / 15 for i in range(1, 61)]):
+                for queries_coef in tqdm([i / 30 for i in range(1, 61)]):
                     linux_check_cpu_temperature(notify=False)
 
                     queries_matrices_1 = [matr * queries_coef for matr in queries_matrices_0]

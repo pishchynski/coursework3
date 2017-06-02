@@ -103,16 +103,16 @@ def run_test_3(verbose=False):
 if __name__ == '__main__':
     read_file = False
 
-    q_system = run_test_1(verbose=True)
-    experiment_1(q_system, read_file=True)
+    # q_system = run_test_1(verbose=True)
+    # experiment_1(q_system, read_file=True)
     # experiment_1_1(q_system, read_file=read_file)
 
     q_system = run_test_2(verbose=True)
-    experiment_2(q_system, read_file=read_file)
-    experiment_4(q_system, read_file=read_file)
+    # experiment_2(q_system, read_file=read_file)
+    # experiment_4(q_system, read_file=read_file)
     experiment_5(q_system, read_file=read_file)
-    experiment_6(q_system, read_file=read_file)
-    experiment_7(q_system, read_file=read_file)
+    # experiment_6(q_system, read_file=read_file)
+    # experiment_7(q_system, read_file=read_file)
 
-    q_system = run_test_3(verbose=True)
-    experiment_3(q_system, read_file=read_file)
+    # q_system = run_test_3(verbose=True)
+    # experiment_3(q_system, read_file=read_file)
