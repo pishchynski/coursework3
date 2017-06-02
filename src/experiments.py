@@ -160,7 +160,9 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$\lambda$',
                r'$\bar v$',
                '$c_{cor}$',
-               'experiment_1_gserv')
+               'experiment_1_gserv',
+               loc=2,
+               display_title=True)
 
 
 def experiment_1_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
@@ -300,15 +302,15 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
 
                 if cor_coef == 1:
-                    matrH_0 = np.array([[-6.3408, 1.87977 * (10 ** (-6))], [1.87977 * (10 ** (-6)), -0.13888]])
-                    matrH_1 = np.array([[6.3214, 0.01939], [0.10822, 0.03066]])
+                    matrH_0 = np.array([[-6.3408, 1.87977 * (10 ** (-6))], [1.87977 * (10 ** (-6)), -0.13888]]) / 5.4 * 5
+                    matrH_1 = np.array([[6.3214, 0.01939], [0.10822, 0.03066]]) / 5.4 * 5
 
                     local_queueing_system.set_MAP_break_stream(matrH_0, matrH_1)
                     break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
                 elif cor_coef == 2:
                     # MAP queries stream
-                    matrH_0 = np.array([[-4.5]])
-                    matrH_1 = np.array([[4.5]])
+                    matrH_0 = np.array([[-5.0]])
+                    matrH_1 = np.array([[5.0]])
                     local_queueing_system.set_MAP_break_stream(matrH_0, matrH_1)
                     break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
 
@@ -331,7 +333,7 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 output_table = BeautifulTable()
                 output_table.column_headers = ['\\rho', 'h', 'P_1^{+}', 'P_2', 'P^{-}']
 
-                for queries_coef in tqdm([i / 15 for i in range(1, 61)]):
+                for queries_coef in tqdm([i / 15 for i in range(1, 301)]):
                     linux_check_cpu_temperature(notify=False)
 
                     break_matrices_1 = [matr * queries_coef for matr in break_matrices_0]
@@ -582,14 +584,16 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
 
                 if cor_coef == 1:
-                    matrH_0 = np.array([[-6.3408, 1.87977 * (10 ** (-6))], [1.87977 * (10 ** (-6)), -0.13888]])
-                    matrH_1 = np.array([[6.3214, 0.01939], [0.10822, 0.03066]])
+                    matrH_0 = np.array(
+                        [[-6.3408, 1.87977 * (10 ** (-6))], [1.87977 * (10 ** (-6)), -0.13888]]) / 5.4 * 5
+                    matrH_1 = np.array([[6.3214, 0.01939], [0.10822, 0.03066]]) / 5.4 * 5
 
                     local_queueing_system.set_MAP_break_stream(matrH_0, matrH_1)
                     break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
                 elif cor_coef == 2:
-                    matrH_0 = np.array([[-4.5]])
-                    matrH_1 = np.array([[4.5]])
+                    # MAP queries stream
+                    matrH_0 = np.array([[-5.0]])
+                    matrH_1 = np.array([[5.0]])
                     local_queueing_system.set_MAP_break_stream(matrH_0, matrH_1)
                     break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
 
