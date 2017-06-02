@@ -722,6 +722,8 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 i = 1
                 while True:
                     linux_check_cpu_temperature(notify=False)
+                    if i % 10 == 0:
+                        print('Status: ', str(i), 'iterations passed.')
 
                     queries_coef = i / 50
                     queries_matrices_1 = [matr * queries_coef for matr in queries_matrices_0]
@@ -835,7 +837,7 @@ def experiment_6(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 s = 1.13547
 
-                for queries_coef in tqdm([0.000013 * (s ** i) for i in range(0, 50)]):
+                for queries_coef in tqdm([0.0013 * (s ** i) for i in range(0, 50)]):
                     linux_check_cpu_temperature(notify=False)
 
                     switch1_2_matr_1 = switch1_2_matr_0 * queries_coef
@@ -945,7 +947,7 @@ def experiment_7(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                 s = 1.13547
 
-                for queries_coef in tqdm([0.0000013 * (s ** i) for i in range(0, 50)]):
+                for queries_coef in tqdm([0.00013 * (s ** i) for i in range(0, 50)]):
                     linux_check_cpu_temperature(notify=False)
 
                     switch2_1_matr_1 = switch2_1_matr_0 * queries_coef
