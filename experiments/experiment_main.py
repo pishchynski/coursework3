@@ -5,7 +5,7 @@ from src.utils import characteristics_loc
 
 
 def run_test_1(verbose=False):
-    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_1", p_max_num=10000)
+    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_1", p_max_num=100000)
     queueing_system.set_BMAP_queries_stream(matrD_0=np.array([[-86., 0.01], [0.02, -2.76]]) / 57.2,
                                             matrD=np.array([[85., 0.99], [0.2, 2.54]]) / 57.2,
                                             n=3,
@@ -41,7 +41,7 @@ def run_test_1(verbose=False):
 
 
 def run_test_2(verbose=False):
-    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_2", p_max_num=10000)
+    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_2", p_max_num=100000)
 
     queueing_system.set_BMAP_queries_stream(np.array([[-8.110725, 0.], [0., -0.26325]]) / 21,
                                             np.array([[8.0568, 0.053925], [0.146625, 0.116625]]) / 21,
@@ -70,10 +70,10 @@ def run_test_2(verbose=False):
 
 
 def run_test_3(verbose=False):
-    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_3", p_max_num=10000)
+    queueing_system = ColdReserveQueueingSystem(name="System_Main_Final_3", p_max_num=100000)
 
-    queueing_system.set_BMAP_queries_stream(matrD_0=np.array([[-86., 0.01], [0.02, -2.76]]) / 40,
-                                            matrD=np.array([[85., 0.99], [0.2, 2.54]]) / 40,
+    queueing_system.set_BMAP_queries_stream(matrD_0=np.array([[-86., 0.01], [0.02, -2.76]]) / 32.7,
+                                            matrD=np.array([[85., 0.99], [0.2, 2.54]]) / 32.7,
                                             n=3,
                                             q=0.8)
 
@@ -101,18 +101,18 @@ def run_test_3(verbose=False):
 
 
 if __name__ == '__main__':
-    read_file = False
+    read_file = True
 
     # q_system = run_test_1(verbose=True)
-    # experiment_1(q_system, read_file=True)
+    # experiment_1(q_system, read_file=read_file)
     # experiment_1_1(q_system, read_file=read_file)
 
-    q_system = run_test_2(verbose=True)
+    # q_system = run_test_2(verbose=True)
     # experiment_2(q_system, read_file=read_file)
-    experiment_4(q_system, read_file=read_file)
+    # experiment_4(q_system, read_file=read_file)
     # experiment_5(q_system, read_file=read_file)
     # experiment_6(q_system, read_file=read_file)
     # experiment_7(q_system, read_file=read_file)
 
-    # q_system = run_test_3(verbose=True)
-    # experiment_3(q_system, read_file=read_file)
+    q_system = run_test_3(verbose=True)
+    experiment_3(q_system, read_file=read_file)

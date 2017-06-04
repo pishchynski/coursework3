@@ -259,27 +259,27 @@ class ColdReserveQueueingSystem:
 
         for i in range(matrQw_k[0].shape[0]):
             row_sum = np.sum([np.sum(matr[i]) for matr in matrQw_k])
-            if abs(row_sum) > 10 ** (-5):
-                print("Qw_k line", str(i), "is not generator-like!", file=sys.stderr)
-                print("Sum = ", str(row_sum), file=sys.stderr)
+            # if abs(row_sum) > 10 ** (-5):
+                # print("Qw_k line", str(i), "is not generator-like!", file=sys.stderr)
+                # print("Sum = ", str(row_sum), file=sys.stderr)
 
         # print("matrQ_k")
         # for matr in matrQ_k:
         #     print(matr.shape)
         for i in range(matrQ_k[0].shape[0]):
             row_sum = np.sum(np.sum([np.sum(matr[i]) for matr in matrQ_k]))
-            if abs(row_sum) > 10 ** (-5):
-                print("Q_k line", str(i), "is not generator-like!", file=sys.stderr)
-                print("Sum = ", str(row_sum), file=sys.stderr)
+            # if abs(row_sum) > 10 ** (-5):
+                # print("Q_k line", str(i), "is not generator-like!", file=sys.stderr)
+                # print("Sum = ", str(row_sum), file=sys.stderr)
 
         # print("matrQv_0")
         # print(matrQv_0.shape)
         for i in range(matrQv_0.shape[0]):
             row_sum = np.sum(matrQv_0[i])
             row_sum += np.sum(np.sum([np.sum(matr[i]) for matr in matrQ_k[1:]]))
-            if abs(row_sum) > 10 ** (-5):
-                print("Second block line", str(i), "is not generator-like!", file=sys.stderr)
-                print("Sum = ", str(row_sum), file=sys.stderr)
+            # if abs(row_sum) > 10 ** (-5):
+                # print("Second block line", str(i), "is not generator-like!", file=sys.stderr)
+                # print("Sum = ", str(row_sum), file=sys.stderr)
 
     def _calc_cal_Q(self):
         block00 = kronsum(kron(np.eye(self.queries_stream.dim_),
@@ -909,15 +909,15 @@ class ColdReserveQueueingSystem:
         # Check ergodicity condition
         system_capacity, matrGamma = self.calc_system_capacity()
 
-        if verbose:
-            print("Q~_k:")
-            for i, matr in enumerate(matrQw_k):
-                print("Q~_" + str(i), "=", matr)
-            print("Q_k:")
-            for i, matr in enumerate(matrQ_k):
-                print("Q_" + str(i), "=", matr)
-            print("Q^_0 = ", matrQv_0)
-            print("Gamma = ", matrGamma)
+        # if verbose:
+        #     print("Q~_k:")
+        #     for i, matr in enumerate(matrQw_k):
+        #         print("Q~_" + str(i), "=", matr)
+        #     print("Q_k:")
+        #     for i, matr in enumerate(matrQ_k):
+        #         print("Q_" + str(i), "=", matr)
+        #     print("Q^_0 = ", matrQv_0)
+        #     print("Gamma = ", matrGamma)
 
         system_load = self.queries_stream.avg_intensity / system_capacity
         if system_load > 1:
@@ -1003,6 +1003,10 @@ class ColdReserveQueueingSystem:
         #                                     ('avg_switch_num', avg_switch_1_2_num + abs(avg_switch_2_1_num))])
 
         return characteristics, vect_p_l
+
+    @property
+    def p_num(self):
+        return self._p_num
 
 # if __name__ == '__main__':
 #     system = ColdReserveQueueingSystem()

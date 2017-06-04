@@ -77,11 +77,17 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
             for cor_coef in range(3):
                 linux_check_cpu_temperature()
 
+                p_max_num = 0
+
+                last_val = 96
+
                 queries_matrices_0 = copy.deepcopy(queries_matrices)
 
                 if cor_coef == 1:
                     matrD_0_g = np.array([[-6.3408, 1.87977 * (10 ** (-6))], [1.87977 * (10 ** (-6)), -0.13888]]) / 17.4
                     matrD_g = np.array([[6.3214, 0.01939], [0.10822, 0.03066]]) / 17.4
+
+                    last_val = 100
 
                     local_queueing_system.set_BMAP_queries_stream(matrD_0_g, matrD_g,
                                                                   q=local_queueing_system.queries_stream.q,
@@ -89,6 +95,9 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                     queries_matrices_0 = copy.deepcopy(local_queueing_system.queries_stream.transition_matrices)
                 elif cor_coef == 2:
                     # MAP queries stream
+
+                    last_val = 101
+
                     matrD_0_map = np.array([[-0.575]])
                     matrD_1_map = np.array([[0.575]])
                     local_queueing_system.set_MAP_queries_stream(matrD_0_map, matrD_1_map)
@@ -111,7 +120,7 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 output_table = BeautifulTable()
                 output_table.column_headers = ['\\rho', '\\lambda', '\\bar{v}']
 
-                for queries_coef in tqdm([i / 25 for i in range(1, 51)]):
+                for queries_coef in tqdm([i / 50 for i in range(1, last_val)]):
                     linux_check_cpu_temperature(notify=False)
 
                     queries_matrices_1 = [matr * queries_coef for matr in queries_matrices_0]
@@ -123,11 +132,14 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
+                    p_max_num = max(local_queueing_system.p_num, p_max_num)
+
                     experiment_1_sublist[1].append([local_queueing_system.queries_stream.avg_intensity,
                                                      characteristics[13]])
                     output_table.append_row([characteristics[0], local_queueing_system.queries_stream.avg_intensity, characteristics[13]])
 
                 with open(filename, mode="a") as file:
+                    print('Vectors max number:', int(p_max_num))
                     print("c_{cor} = ", local_queueing_system.queries_stream.c_cor, file=file)
                     print("", file=file)
                     print(output_table, file=file)
@@ -160,9 +172,9 @@ def experiment_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$\lambda$',
                r'$\bar v$',
                '$c_{cor}$',
-               'experiment_1_gserv',
+               'experiment_1',
                loc=2,
-               display_title=True)
+               display_title=False)
 
 
 def experiment_1_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
@@ -188,6 +200,8 @@ def experiment_1_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
             for cor_coef in range(3):
                 linux_check_cpu_temperature()
+
+                p_max_num = 0
 
                 queries_matrices_0 = copy.deepcopy(queries_matrices)
 
@@ -235,11 +249,14 @@ def experiment_1_1(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
+                    p_max_num = max(local_queueing_system.p_num, p_max_num)
+
                     experiment_1_1_sublist[1].append([local_queueing_system.queries_stream.avg_intensity,
                                                      characteristics[2]])
                     output_table.append_row([characteristics[0], local_queueing_system.queries_stream.avg_intensity, characteristics[2]])
 
                 with open(filename, mode="a") as file:
+                    print('Vectors max number:', int(p_max_num))
                     print("c_{cor} = ", local_queueing_system.queries_stream.c_cor, file=file)
                     print("", file=file)
                     print(output_table, file=file)
@@ -286,7 +303,7 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
     linux_check_cpu_temperature()
 
-    print('Experiment 2_1 launched!')
+    print('Experiment 2 launched!')
 
     experiment_2_1_result_list = []
     experiment_2_2_result_list = []
@@ -298,6 +315,8 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
             for cor_coef in range(3):
                 linux_check_cpu_temperature()
+
+                p_max_num = 0
 
                 break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
 
@@ -333,7 +352,7 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 output_table = BeautifulTable()
                 output_table.column_headers = ['\\rho', 'h', 'P_1^{+}', 'P_2', 'P^{-}']
 
-                for queries_coef in tqdm([i / 15 for i in range(1, 301)]):
+                for queries_coef in tqdm([i / 15 for i in range(1, 61)]):
                     linux_check_cpu_temperature(notify=False)
 
                     break_matrices_1 = [matr * queries_coef for matr in break_matrices_0]
@@ -341,6 +360,8 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                     local_queueing_system.set_MAP_break_stream(break_matrices_1[0], break_matrices_1[1])
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
+
+                    p_max_num = max(local_queueing_system.p_num, p_max_num)
 
                     experiment_2_1_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
                                                      characteristics[4]])
@@ -356,6 +377,7 @@ def experiment_2(queueing_system: ColdReserveQueueingSystem, read_file=False):
                                              characteristics[10]])
 
                 with open(filename, mode="a") as file:
+                    print('Vectors max number:', int(p_max_num))
                     print("c_{cor} = ", local_queueing_system.break_stream.c_cor, file=file)
                     print("", file=file)
                     print(output_table, file=file)
@@ -464,8 +486,10 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
             break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
 
-            for cor_coef in range(3):
+            for cor_coef in range(2):
                 linux_check_cpu_temperature()
+
+                p_max_num = 0
 
                 # repair_vect = copy.deepcopy(local_queueing_system.repair_stream.repres_vect)
                 # repair_matr = copy.deepcopy(local_queueing_system.repair_stream.repres_matr)
@@ -477,15 +501,15 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 # break_coefficients = [i / 33 for i in range(1, 67, 2)] + [2]
                 break_coefficients = [i / 15 for i in range(1, 130, 4)]
 
+                # if cor_coef == 1:
+                #    repair_vect = np.array([[1., 0.]])
+                #    repair_matr = np.array([[-1., 1.], [0., -1.]]) / 5
+
+                #    local_queueing_system.set_PH_repair_stream(repair_vect, repair_matr)
+
+                #    break_coefficients = [i / 15 for i in range(1, 130, 4)]
+
                 if cor_coef == 1:
-                    repair_vect = np.array([[1., 0.]])
-                    repair_matr = np.array([[-1., 1.], [0., -1.]]) / 5
-
-                    local_queueing_system.set_PH_repair_stream(repair_vect, repair_matr)
-
-                    break_coefficients = [i / 15 for i in range(1, 130, 4)]
-
-                elif cor_coef == 2:
                     repair_vect = np.array([[1.]])
                     repair_matr = np.array([[-0.1]])
 
@@ -519,11 +543,14 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
+                    p_max_num = max(local_queueing_system.p_num, p_max_num)
+
                     experiment_3_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
                                                      characteristics[13]])
                     output_table.append_row([characteristics[0], local_queueing_system.break_stream.avg_intensity, characteristics[13]])
 
                 with open(filename, mode="a") as file:
+                    print('Vectors max number:', int(p_max_num))
                     print("c_{var} = ", local_queueing_system.repair_stream.c_var, file=file)
                     print("", file=file)
                     print(output_table, file=file)
@@ -557,7 +584,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$\bar{v}$',
                '$c_{var}$',
                'experiment_3',
-               loc=4)
+               loc=2)
 
 def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
     """
@@ -573,6 +600,8 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
     print('Experiment 4 launched!')
 
     experiment_4_result_list = []
+    experiment_6_result_list = []
+    experiment_7_result_list = []
 
     if not read_file:
         try:
@@ -580,6 +609,8 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
             for cor_coef in range(3):
                 linux_check_cpu_temperature()
+
+                p_max_num = 0
 
                 break_matrices_0 = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
 
@@ -610,11 +641,13 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
                     print("============== END SYSTEM =================\n", file=file)
 
                 experiment_4_sublist = [local_queueing_system.break_stream.c_cor, []]
+                experiment_6_sublist = [local_queueing_system.break_stream.c_cor, []]
+                experiment_7_sublist = [local_queueing_system.break_stream.c_cor, []]
 
                 output_table = BeautifulTable()
-                output_table.column_headers = ['\\rho', 'h', '\\bar{v}']
+                output_table.column_headers = ['\\rho', 'h', '\\bar{v}', '\\khi_{1,2}', '\\khi_{2,1}']
 
-                for queries_coef in tqdm([i / 15 for i in range(1, 61)]):
+                for queries_coef in tqdm([i / 15 for i in range(1, 46)]):
                     linux_check_cpu_temperature(notify=False)
 
                     break_matrices_1 = [matr * queries_coef for matr in break_matrices_0]
@@ -623,37 +656,58 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
+                    p_max_num = max(local_queueing_system.p_num, p_max_num)
+
                     experiment_4_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
                                                     characteristics[13]])
+                    experiment_6_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
+                                                    characteristics[11]])
+                    experiment_7_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
+                                                    characteristics[12]])
 
                     output_table.append_row([characteristics[0],
                                              local_queueing_system.break_stream.avg_intensity,
-                                             characteristics[13]])
+                                             characteristics[13],
+                                             characteristics[11],
+                                             characteristics[12]])
 
                 with open(filename, mode="a") as file:
+                    print('Vectors max number:', int(p_max_num))
                     print("c_{cor} = ", local_queueing_system.break_stream.c_cor, file=file)
                     print("", file=file)
                     print(output_table, file=file)
                     print('\n', file=file)
 
                 experiment_4_result_list.append(copy.deepcopy(experiment_4_sublist))
+                experiment_6_result_list.append(copy.deepcopy(experiment_6_sublist))
+                experiment_7_result_list.append(copy.deepcopy(experiment_7_sublist))
 
             file_name = 'experiment_4_' + local_queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_4_result_list))
 
-        except ValueError as e:
+            file_name = 'experiment_6_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_6_result_list))
+
+            file_name = 'experiment_7_' + local_queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_7_result_list))
+
+        except Exception as e:
             print(str(e))
             traceback.print_exc(file=sys.stderr)
             file_name = 'experiment_4_except_' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
                 res_file.write(str(experiment_4_result_list))
 
-        except Exception:
-            traceback.print_exc(file=sys.stderr)
-            file_name = 'experiment_4_except_' + queueing_system.name + '.qsr'
+            file_name = 'experiment_6_except_' + queueing_system.name + '.qsr'
             with open('../experiment_results/' + file_name, mode='w') as res_file:
-                res_file.write(str(experiment_4_result_list))
+                res_file.write(str(experiment_6_result_list))
+
+            file_name = 'experiment_7_except_' + queueing_system.name + '.qsr'
+            with open('../experiment_results/' + file_name, mode='w') as res_file:
+                res_file.write(str(experiment_7_result_list))
 
     else:
         file_name = 'experiment_4_' + queueing_system.name + '.qsr'
@@ -661,12 +715,36 @@ def experiment_4(queueing_system: ColdReserveQueueingSystem, read_file=False):
             res_line = res_file.readline()
         experiment_4_result_list = ast.literal_eval(res_line)
 
+        file_name = 'experiment_6_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_6_result_list = ast.literal_eval(res_line)
+
+        file_name = 'experiment_7_' + queueing_system.name + '.qsr'
+        with open('../experiment_results/' + file_name, mode='r') as res_file:
+            res_line = res_file.readline()
+        experiment_7_result_list = ast.literal_eval(res_line)
+
     build_plot(experiment_4_result_list,
                r'Зависимость $\bar{v}$ от $h$ при различных' + '\nкоэффициентах корреляции $c_{cor}$ в потоке поломок',
                r'h',
                r'$\bar{v}$',
                '$c_{cor}$',
                'experiment_4',
+               loc=4)
+    build_plot(experiment_6_result_list,
+               r'Зависимость $\chi_{1,2}$ от $h$ при различных' + '\nкоэффициентах корреляции $c_{cor}$ в потоке поломок',
+               r'h',
+               r'$\chi_{1,2}$',
+               '$c_{cor}$',
+               'experiment_6',
+               loc=4)
+    build_plot(experiment_7_result_list,
+               r'Зависимость $\chi_{2,1}$ от $h$ при различных' + '\nкоэффициентах корреляции $c_{cor}$ в потоке поломок',
+               r'h',
+               r'$\chi_{2,1}$',
+               '$c_{cor}$',
+               'experiment_7',
                loc=4)
 
 
@@ -694,6 +772,8 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
             for break_coef in [1/4, 1, 2.4]:
                 linux_check_cpu_temperature()
+
+                p_max_num = 0
 
                 local_queueing_system.queries_stream.set_transition_matrices(queries_matrices)
 
@@ -744,6 +824,8 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
+                    p_max_num = max(local_queueing_system.p_num, p_max_num)
+
                     experiment_5_sublist[1].append([local_queueing_system.queries_stream.avg_intensity,
                                                     characteristics[13]])
 
@@ -753,6 +835,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
                     i += 1
 
                 with open(filename, mode="a") as file:
+                    print('Vectors max number:', int(p_max_num))
                     print("h = ", local_queueing_system.break_stream.avg_intensity, file=file)
                     print("", file=file)
                     print(output_table, file=file)
@@ -818,6 +901,8 @@ def experiment_6(queueing_system: ColdReserveQueueingSystem, read_file=False):
             for iter, break_coef in enumerate([1/4, 1, 2.4]):
                 linux_check_cpu_temperature()
 
+                p_max_num = 0
+
                 break_matrices_0 = copy.deepcopy(break_matrices)
 
                 matrH_0 = break_matrices_0[0] * break_coef
@@ -855,6 +940,8 @@ def experiment_6(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
+                    p_max_num = max(local_queueing_system.p_num, p_max_num)
+
                     experiment_6_sublist[1].append([1 / local_queueing_system.switch1_2_stream.avg_intensity,
                                                     characteristics[11]])
 
@@ -863,6 +950,7 @@ def experiment_6(queueing_system: ColdReserveQueueingSystem, read_file=False):
                                              characteristics[11]])
 
                 with open(filename, mode="a") as file:
+                    print('Vectors max number:', int(p_max_num))
                     print("h = ", local_queueing_system.break_stream.avg_intensity, file=file)
                     print("", file=file)
                     print(output_table, file=file)
@@ -928,6 +1016,8 @@ def experiment_7(queueing_system: ColdReserveQueueingSystem, read_file=False):
             for iter, break_coef in enumerate([1/4, 1, 2.4]):
                 linux_check_cpu_temperature()
 
+                p_max_num = 0
+
                 break_matrices_0 = copy.deepcopy(break_matrices)
 
                 matrH_0 = break_matrices_0[0] * break_coef
@@ -965,6 +1055,8 @@ def experiment_7(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
+                    p_max_num = max(local_queueing_system.p_num, p_max_num)
+
                     experiment_7_sublist[1].append([1 / local_queueing_system.switch2_1_stream.avg_intensity,
                                                     characteristics[12]])
 
@@ -973,6 +1065,7 @@ def experiment_7(queueing_system: ColdReserveQueueingSystem, read_file=False):
                                              characteristics[12]])
 
                 with open(filename, mode="a") as file:
+                    print('Vectors max number:', int(p_max_num))
                     print("h = ", local_queueing_system.break_stream.avg_intensity, file=file)
                     print("", file=file)
                     print(output_table, file=file)
