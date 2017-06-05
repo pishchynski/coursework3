@@ -486,7 +486,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
             break_matrices = copy.deepcopy(local_queueing_system.break_stream.transition_matrices)
 
-            for cor_coef in range(2):
+            for cor_coef in range(3):
                 linux_check_cpu_temperature()
 
                 p_max_num = 0
@@ -499,23 +499,23 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 local_queueing_system.set_MAP_break_stream(break_matrices_0[0], break_matrices_0[1])
 
                 # break_coefficients = [i / 33 for i in range(1, 67, 2)] + [2]
-                break_coefficients = [i / 15 for i in range(1, 130, 4)]
-
-                # if cor_coef == 1:
-                #    repair_vect = np.array([[1., 0.]])
-                #    repair_matr = np.array([[-1., 1.], [0., -1.]]) / 5
-
-                #    local_queueing_system.set_PH_repair_stream(repair_vect, repair_matr)
-
-                #    break_coefficients = [i / 15 for i in range(1, 130, 4)]
+                break_coefficients = [i / 30 for i in range(1, 130, 4)]
 
                 if cor_coef == 1:
+                   repair_vect = np.array([[0.05, 0.95]])
+                   repair_matr = np.array([[-0.186075, 0.], [0., -14.69994]]) / 29.99985
+
+                   local_queueing_system.set_PH_repair_stream(repair_vect, repair_matr)
+
+                   break_coefficients = [i / 30 for i in range(1, 130, 4)]
+
+                elif cor_coef == 2:
                     repair_vect = np.array([[1.]])
                     repair_matr = np.array([[-0.1]])
 
                     local_queueing_system.set_PH_repair_stream(repair_vect, repair_matr)
 
-                    break_coefficients = [i / 15 for i in range(1, 130, 4)]
+                    break_coefficients = [i / 30 for i in range(1, 130, 4)]
 
                 characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
@@ -861,7 +861,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 res_file.write(str(experiment_5_result_list))
 
     else:
-        file_name = 'experiment_5_' + queueing_system.name + '.qsr'
+        file_name = 'experiment_5_' + queueing_system.name + '_2.qsr'
         with open('../experiment_results/' + file_name, mode='r') as res_file:
             res_line = res_file.readline()
         experiment_5_result_list = ast.literal_eval(res_line)
@@ -871,7 +871,7 @@ def experiment_5(queueing_system: ColdReserveQueueingSystem, read_file=False):
                r'$\lambda$',
                r'$\bar{v}$',
                '$h$',
-               'experiment_5',
+               'experiment_5_2',
                loc=2,
                display_title=False)
 

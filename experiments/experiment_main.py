@@ -85,7 +85,7 @@ def run_test_3(verbose=False):
     queueing_system.set_PH_switch1_2_stream(np.array([[0.05, 0.95]]), np.array([[-1.86075, 0.], [0., -146.9994]]))
     queueing_system.set_PH_switch2_1_stream(np.array([[0.05, 0.95]]), np.array([[-18.6075, 0.], [0., -1469.994]]))
 
-    queueing_system.set_PH_repair_stream(np.array([[0.98, 0.02]]), np.array([[-100., 0.], [0., -0.002]]))
+    queueing_system.set_PH_repair_stream(np.array([[0.98, 0.02]]), np.array([[-100., 0.], [0., -0.002]]) / 0.99902)
     # queueing_system.set_PH_repair_stream(np.array([[1., 0.]]), np.array([[-1., 1.], [0., -1.]]) / 5)
     # queueing_system.set_PH_repair_stream(np.array([[1.]]), np.array([[-0.1]]))
 
@@ -101,7 +101,7 @@ def run_test_3(verbose=False):
 
 
 if __name__ == '__main__':
-    read_file = True
+    read_file = False
 
     # q_system = run_test_1(verbose=True)
     # experiment_1(q_system, read_file=read_file)
