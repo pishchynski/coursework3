@@ -499,7 +499,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 local_queueing_system.set_MAP_break_stream(break_matrices_0[0], break_matrices_0[1])
 
                 # break_coefficients = [i / 33 for i in range(1, 67, 2)] + [2]
-                break_coefficients = [i / 30 for i in range(1, 130, 4)]
+                # break_coefficients = [i / 30 for i in range(1, 130, 4)]
 
                 if cor_coef == 1:
                    repair_vect = np.array([[0.05, 0.95]])
@@ -507,7 +507,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                    local_queueing_system.set_PH_repair_stream(repair_vect, repair_matr)
 
-                   break_coefficients = [i / 30 for i in range(1, 130, 4)]
+                   # break_coefficients = [i / 30 for i in range(1, 130, 4)]
 
                 elif cor_coef == 2:
                     repair_vect = np.array([[1.]])
@@ -515,7 +515,7 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     local_queueing_system.set_PH_repair_stream(repair_vect, repair_matr)
 
-                    break_coefficients = [i / 30 for i in range(1, 130, 4)]
+                    # break_coefficients = [i / 30 for i in range(1, 130, 4)]
 
                 characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
@@ -534,8 +534,16 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
                 output_table = BeautifulTable()
                 output_table.column_headers = ['\\rho', 'h', '\\bar{v}']
 
-                for break_coef in tqdm(break_coefficients):
+                print('Repair c_var:', str(local_queueing_system.repair_stream.c_var))
+
+                i = 1
+                while True:
                     linux_check_cpu_temperature(notify=False)
+                    if i % 10 == 0:
+                        sys.stdout.write('\rStatus: {} iterations passed.'.format(str(i)))
+                        sys.stdout.flush()
+
+                    break_coef = i / 50
 
                     break_matrices_1 = [matr * break_coef for matr in break_matrices_0]
 
@@ -543,11 +551,16 @@ def experiment_3(queueing_system: ColdReserveQueueingSystem, read_file=False):
 
                     characteristics, vect_p_l = local_queueing_system.calc_characteristics(verbose=False)
 
+                    if local_queueing_system.queries_stream.avg_intensity >= characteristics[1]:
+                        break
+
                     p_max_num = max(local_queueing_system.p_num, p_max_num)
 
                     experiment_3_sublist[1].append([local_queueing_system.break_stream.avg_intensity,
                                                      characteristics[13]])
                     output_table.append_row([characteristics[0], local_queueing_system.break_stream.avg_intensity, characteristics[13]])
+
+                    i+=1
 
                 with open(filename, mode="a") as file:
                     print('Vectors max number:', int(p_max_num))
